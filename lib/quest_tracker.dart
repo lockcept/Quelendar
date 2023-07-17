@@ -8,17 +8,50 @@ class QuestTracker extends StatefulWidget {
 }
 
 class QuestTrackerState extends State<QuestTracker> {
-  // Add your quest tracker logic here
+  int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quest Tracker'),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        selectedIndex: currentPageIndex,
+        destinations: const <Widget>[
+          NavigationDestination(
+            icon: Icon(Icons.list),
+            label: '퀘스트',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.bar_chart),
+            label: '통계',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings),
+            label: '설정',
+          ),
+        ],
       ),
-      body: const Center(
-        child: Text('Quest Tracker Content'),
-      ),
+      body: <Widget>[
+        Container(
+          color: Colors.white,
+          alignment: Alignment.center,
+          child: const Text('퀘스트 페이지'),
+        ),
+        Container(
+          color: Colors.white,
+          alignment: Alignment.center,
+          child: const Text('통계 페이지'),
+        ),
+        Container(
+          color: Colors.white,
+          alignment: Alignment.center,
+          child: const Text('설정 페이지'),
+        ),
+      ][currentPageIndex],
     );
   }
 }
