@@ -4,10 +4,10 @@ class QuestTracker extends StatefulWidget {
   const QuestTracker({super.key});
 
   @override
-  _QuestTrackerState createState() => _QuestTrackerState();
+  QuestTrackerState createState() => QuestTrackerState();
 }
 
-class _QuestTrackerState extends State<QuestTracker> {
+class QuestTrackerState extends State<QuestTracker> {
   // Add your quest tracker logic here
 
   @override
