@@ -63,6 +63,7 @@ class Quest {
   List<Tag> tagList;
   int startAt;
   int? endAt;
+  int duration;
   RepeatCycle repeatCycle;
   List<int> repeatData;
   AchievementType achievementType;
@@ -75,6 +76,7 @@ class Quest {
     required this.tagList,
     required this.startAt,
     this.endAt,
+    required this.duration,
     required this.repeatCycle,
     required this.repeatData,
     required this.achievementType,
