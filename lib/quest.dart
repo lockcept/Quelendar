@@ -1,12 +1,16 @@
 import 'package:nanoid/nanoid.dart';
 
 class Task {
+  int id;
+  int missionId;
   int startAt;
   int? endAt;
   int value;
   String? comment;
 
   Task({
+    required this.id,
+    required this.missionId,
     required this.startAt,
     this.endAt,
     required this.value,
@@ -23,18 +27,20 @@ enum AchievementType {
 }
 
 class Mission {
+  int id;
+  int questId;
   int startAt;
   int endAt;
   AchievementType achievementType;
   int goal;
-  List<Task> taskList;
 
   Mission({
+    required this.id,
+    required this.questId,
     required this.startAt,
     required this.endAt,
     required this.achievementType,
     required this.goal,
-    required this.taskList,
   });
 }
 
@@ -60,7 +66,7 @@ enum RepeatCycle {
 class Quest {
   String id;
   String name;
-  List<Tag> tagList;
+  List<String> tagIdList;
   int startAt;
   int? endAt;
   int duration;
@@ -68,12 +74,11 @@ class Quest {
   List<int> repeatData;
   AchievementType achievementType;
   int goal;
-  List<Mission> missionList;
 
   Quest({
     required this.id,
     required this.name,
-    required this.tagList,
+    required this.tagIdList,
     required this.startAt,
     this.endAt,
     required this.duration,
@@ -81,6 +86,5 @@ class Quest {
     required this.repeatData,
     required this.achievementType,
     required this.goal,
-    required this.missionList,
   });
 }

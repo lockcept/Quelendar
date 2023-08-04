@@ -37,7 +37,7 @@ class QuestTrackerState extends State<QuestTracker> {
       Container(
         color: Colors.white,
         alignment: Alignment.center,
-        child: const Text('통계'),
+        child: const Text('퀘스트'),
       ),
       Container(
         color: Colors.white,
@@ -60,11 +60,11 @@ class QuestTrackerState extends State<QuestTracker> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
-            label: '퀘스트',
+            label: '미션',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
-            label: '통계',
+            label: '퀘스트',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
