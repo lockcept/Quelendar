@@ -12,7 +12,7 @@ class QuestTracker extends StatefulWidget {
 }
 
 class QuestTrackerState extends State<QuestTracker> {
-  int currentPageIndex = 0;
+  int currentPageIndex = 1;
 
   var bodyList = <Widget>[
     const HomeBody(),

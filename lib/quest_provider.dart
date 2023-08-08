@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:quest_tracker/quest.dart';
+import 'package:quest_tracker/quest_dummy.dart';
 
 class QuestProvider with ChangeNotifier {
-  List<Quest> quests = [];
-  List<Mission> missions = [];
-  List<Task> tasks = [];
-  List<Tag> tags = [];
-  int a = 3;
+  List<Quest> questList = [];
+  List<Mission> missionList = [];
+  List<Task> taskList = [];
+  List<Tag> tagList = [];
+
+  QuestProvider() {
+    initQuest();
+  }
+
+  void initQuest() {
+    questList.add(quest1);
+    questList.add(quest2);
+    questList.add(quest3);
+    notifyListeners();
+  }
 
   void addQuest(Quest quest) {
-    quests.add(quest);
+    questList.add(quest);
     notifyListeners();
   }
 }
