@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:quest_tracker/body/home_body.dart';
+
+import 'body/quest_body.dart';
+import 'body/setting_body.dart';
 
 class QuestTracker extends StatefulWidget {
   const QuestTracker({super.key});
@@ -10,42 +14,11 @@ class QuestTracker extends StatefulWidget {
 class QuestTrackerState extends State<QuestTracker> {
   int currentPageIndex = 0;
 
-  late List<Widget> bodyList;
-
-  QuestTrackerState() {
-    bodyList = <Widget>[
-      Container(
-        color: Colors.white,
-        alignment: Alignment.center,
-        child: ListView(
-          children: const <Widget>[
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('User 1'),
-            ),
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('User 2'),
-            ),
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('User 3'),
-            ),
-          ],
-        ),
-      ),
-      Container(
-        color: Colors.white,
-        alignment: Alignment.center,
-        child: const Text('퀘스트'),
-      ),
-      Container(
-        color: Colors.white,
-        alignment: Alignment.center,
-        child: const Text('설정'),
-      ),
-    ];
-  }
+  var bodyList = <Widget>[
+    const HomeBody(),
+    const QuestBody(),
+    const SettingBody(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +33,7 @@ class QuestTrackerState extends State<QuestTracker> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
-            label: '미션',
+            label: '홈',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
