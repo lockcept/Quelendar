@@ -1,10 +1,11 @@
 import 'package:quest_tracker/quest.dart';
 
-var tag = Tag(id: 'smANMTFuNx', name: '록셉');
+final tag1 = Tag(id: 'smANMTFuNx', name: '자기_계발');
+final tag2 = Tag(id: 'K1MOt3PaBl', name: '개발');
 
-var quest1 = Quest(
+final quest1 = Quest(
   id: 'PCv6mDVl30',
-  name: 'game',
+  name: '솔랭하기',
   tagIdList: ['smANMTFuNx'],
   startAt: 1690452492,
   duration: 7,
@@ -14,10 +15,10 @@ var quest1 = Quest(
   goal: 10,
 );
 
-var quest2 = Quest(
+final quest2 = Quest(
   id: 'yPJHhdxvBG',
-  name: 'coding',
-  tagIdList: ['smANMTFuNx'],
+  name: '앱 개발하기',
+  tagIdList: ['smANMTFuNx', 'K1MOt3PaBl'],
   startAt: 1690452492,
   duration: 1,
   repeatCycle: RepeatCycle.week,
@@ -26,9 +27,9 @@ var quest2 = Quest(
   goal: 60 * 5,
 );
 
-var quest3 = Quest(
+final quest3 = Quest(
   id: 'CiBnEQm9g0',
-  name: 'money',
+  name: '월세 내기',
   tagIdList: [],
   startAt: 1690452492,
   duration: 1,
@@ -36,4 +37,16 @@ var quest3 = Quest(
   repeatData: [5],
   achievementType: AchievementType.count,
   goal: 1,
+);
+
+final quest4 = Quest(
+  id: 'qhWJ8yBKSF',
+  name: '팔굽혀펴기',
+  tagIdList: [],
+  startAt: 1690452492,
+  duration: 1,
+  repeatCycle: RepeatCycle.week,
+  repeatData: [0, 2, 4],
+  achievementType: AchievementType.count,
+  goal: 20,
 );

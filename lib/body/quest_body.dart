@@ -10,19 +10,22 @@ class QuestBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var questList = context.watch<QuestProvider>().questList;
-    log(questList.toString());
+    final questMap = context.watch<QuestProvider>().questMap;
+    log(questMap.toString());
 
-    var itemCount = questList.length;
+    final itemCount = questMap.length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('오른쪽에 검색과 정렬이 들어가야함')),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
       body: itemCount > 0
           ? ListView.builder(
               padding: const EdgeInsets.all(8),
               itemCount: itemCount,
               itemBuilder: (BuildContext context, int index) {
-                return QuestItem(quest: questList[index]);
+                return QuestItem(quest: questMap.values.toList()[index]);
               },
             )
           : const Center(child: Text('퀘스트를 생성해보세요.')),

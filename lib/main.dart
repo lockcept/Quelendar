@@ -16,7 +16,14 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.green),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF40F909), brightness: Brightness.dark),
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(fontSize: 72, fontWeight: FontWeight.bold),
+          bodyMedium: TextStyle(fontSize: 14, fontFamily: 'Hind'),
+        ),
+      ),
       home: const QuestTracker(),
     );
   }
