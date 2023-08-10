@@ -3,6 +3,26 @@ import 'package:provider/provider.dart';
 import 'package:quest_tracker/quest.dart';
 import 'package:quest_tracker/quest_provider.dart';
 
+String getRepeatMessage(Quest quest) {
+  final repeatCycle = quest.repeatCycle;
+  final repeatData = quest.repeatData;
+  switch (repeatCycle) {
+    case RepeatCycle.none:
+      return "반복 없음";
+    case RepeatCycle.days:
+      if (repeatData.isEmpty) break;
+      return "${repeatData[0]}일 마다";
+    case RepeatCycle.week:
+      if (repeatData.isEmpty) break;
+      const daysString = ['월', '화', '수', '목', '금', '토', '일'];
+      return "매주 ${repeatData.map((int idx) => daysString[idx]).join(", ")}요일";
+    case RepeatCycle.month:
+      if (repeatData.isEmpty) break;
+      return "매월 ${repeatData[0]}일";
+  }
+  return "반복 없음";
+}
+
 class QuestItem extends StatelessWidget {
   final Quest quest;
   const QuestItem({required this.quest, super.key});
@@ -14,6 +34,9 @@ class QuestItem extends StatelessWidget {
       final tag = tagMap[id];
       if (tag != null) return "#${tag.name}";
     });
+
+    final repeatMessage = getRepeatMessage(quest);
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4.0),
       decoration: BoxDecoration(
@@ -42,6 +65,13 @@ class QuestItem extends StatelessWidget {
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(tagNameList.join((", "))),
+          ),
+          trailing: Text(
+            repeatMessage,
+            style: TextStyle(
+              fontSize: 12,
+              color: Theme.of(context).textTheme.bodySmall?.color,
+            ),
           ),
           onTap: () {
             Navigator.push(

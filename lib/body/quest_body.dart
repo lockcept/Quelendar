@@ -11,7 +11,6 @@ class QuestBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final questMap = context.watch<QuestProvider>().questMap;
-    log(questMap.toString());
 
     final itemCount = questMap.length;
 
