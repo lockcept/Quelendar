@@ -57,6 +57,7 @@ enum RepeatCycle {
   month('month'),
   week('week'),
   days('days'),
+  dayPerDays('dayPerDays'),
   none('none');
 
   const RepeatCycle(this.type);
@@ -69,7 +70,6 @@ class Quest {
   List<String> tagIdList;
   int startAt;
   int? endAt;
-  int duration;
   RepeatCycle repeatCycle;
   List<int> repeatData;
   AchievementType achievementType;
@@ -81,7 +81,6 @@ class Quest {
     required this.tagIdList,
     required this.startAt,
     this.endAt,
-    required this.duration,
     required this.repeatCycle,
     required this.repeatData,
     required this.achievementType,

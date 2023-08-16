@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quest_tracker/item/quest_edit_view.dart';
 import 'package:quest_tracker/quest.dart';
 import 'package:quest_tracker/quest_provider.dart';
 
@@ -9,9 +10,12 @@ String getRepeatMessage(Quest quest) {
   switch (repeatCycle) {
     case RepeatCycle.none:
       return "반복 없음";
+    case RepeatCycle.dayPerDays:
+      if (repeatData.isEmpty) break;
+      return "${repeatData[0]}일 마다 하루";
     case RepeatCycle.days:
       if (repeatData.isEmpty) break;
-      return "${repeatData[0]}일 마다";
+      return "${repeatData[0]}일 씩";
     case RepeatCycle.week:
       if (repeatData.isEmpty) break;
       const daysString = ['월', '화', '수', '목', '금', '토', '일'];
@@ -80,36 +84,6 @@ class QuestItem extends StatelessWidget {
                   builder: (context) => QuestEditView(quest: quest)),
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class QuestEditView extends StatelessWidget {
-  final Quest quest;
-  const QuestEditView({required this.quest, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Theme.of(context).colorScheme.onPrimaryContainer,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            quest.name = "asdf";
-          },
-          child: const Text('Go back!'),
         ),
       ),
     );
