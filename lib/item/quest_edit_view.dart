@@ -20,7 +20,7 @@ class QuestEditView extends StatefulWidget {
 class QuestEditViewState extends State<QuestEditView> {
   bool isEditMode = false;
   late String id;
-  String? name;
+  late String name;
   late List<String> tagIdList;
   late int startAt;
   late int? endAt;
@@ -36,7 +36,7 @@ class QuestEditViewState extends State<QuestEditView> {
     super.initState();
 
     id = widget.quest?.id ?? nanoid();
-    name = widget.quest?.name;
+    name = widget.quest?.name ?? "";
     tagIdList = widget.quest?.tagIdList ?? [];
     startAt = widget.quest?.startAt ?? DateTime.now().millisecondsSinceEpoch;
     endAt = widget.quest?.endAt;
@@ -51,8 +51,8 @@ class QuestEditViewState extends State<QuestEditView> {
   }
 
   String? validateQuest() {
-    if (name == null || name!.isEmpty) return "이름을 입력하세요";
-    if (name!.length > 16) return "이름은 16글자를 넘을 수 없습니다";
+    if (name.isEmpty) return "이름을 입력하세요";
+    if (name.length > 16) return "이름은 16글자를 넘을 수 없습니다";
     if (tagIdList.length > 3) return "태그는 최대 3개까지 지정 가능합니다";
     return null;
   }
@@ -125,11 +125,21 @@ class QuestEditViewState extends State<QuestEditView> {
         '시작 날짜',
         ElevatedButton(
           onPressed: () async {
+            final startDate = DateTime.fromMillisecondsSinceEpoch(startAt);
+
+            final maxDate = DateTime(2033).subtract(const Duration(days: 1));
+
+            final endDate = endAt != null
+                ? DateTime.fromMillisecondsSinceEpoch(endAt!)
+                : maxDate;
+
+            final lastDate = maxDate.isAfter(endDate) ? endDate : maxDate;
+
             final DateTime? pickedDate = await showDatePicker(
               context: context,
-              initialDate: DateTime.fromMillisecondsSinceEpoch(startAt),
+              initialDate: startDate,
               firstDate: DateTime(2023),
-              lastDate: DateTime(2033).subtract(const Duration(days: 1)),
+              lastDate: lastDate,
             );
 
             if (pickedDate != null) {
@@ -177,18 +187,18 @@ class QuestEditViewState extends State<QuestEditView> {
                     initialDate: endAt != null
                         ? DateTime.fromMillisecondsSinceEpoch(endAt!)
                         : DateTime.now(),
-                    firstDate: DateTime(2023),
+                    firstDate: DateTime.fromMillisecondsSinceEpoch(startAt),
                     lastDate: DateTime(2033).subtract(const Duration(days: 1)),
                   );
 
                   if (pickedDate != null) {
                     setState(() {
-                      startAt = pickedDate.millisecondsSinceEpoch;
+                      endAt = pickedDate.millisecondsSinceEpoch;
                     });
                   }
                 },
                 child: Text(
-                    endAt != null ? getDateformatString(endAt!) : "종료 날짜 없음"),
+                    endAt != null ? getDateformatString(endAt!) : "종료 날짜 설정"),
               ),
           ],
         ),
@@ -231,7 +241,7 @@ class QuestEditViewState extends State<QuestEditView> {
             try {
               final quest = Quest(
                 id: id,
-                name: name!,
+                name: name,
                 tagIdList: tagIdList,
                 startAt: startAt,
                 endAt: endAt,
