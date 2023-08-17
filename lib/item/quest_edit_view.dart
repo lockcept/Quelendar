@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:quest_tracker/item/quest_item.dart';
 import 'package:quest_tracker/quest.dart';
 import 'package:quest_tracker/quest_provider.dart';
-import 'package:quest_tracker/util/get_format_string.dart';
 import 'package:quest_tracker/util/get_devided_row.dart';
+import 'package:quest_tracker/util/get_format_string.dart';
 
 class QuestEditView extends StatefulWidget {
   final Quest? quest;
@@ -69,43 +69,31 @@ class QuestEditViewState extends State<QuestEditView> {
         missionMap.values.where((mission) => mission.questId == id).toList();
 
     final viewModeChildren = [
-      getDevidedRow(
-        '이름',
-        Text(
-          name.toString(),
-        ),
+      buildCardTable(
+        {
+          '이름': Text(
+            name.toString(),
+          ),
+          '태그': Text(
+            tagNameList.join(", "),
+          ),
+        },
       ),
-      getDevidedRow(
-        '태그',
-        Text(
-          tagNameList.join(", "),
-        ),
+      buildCardTable(
+        {
+          '시작 날짜': Text(getDateformatString(startAt)),
+          '종료 날짜': Text(endAt != null ? getDateformatString(endAt!) : "없음"),
+          '반복 주기': Text(getRepeatMessage(repeatCycle, repeatData) ?? ""),
+        },
       ),
-      const Divider(),
-      getDevidedRow(
-        '시작 날짜',
-        Text(getDateformatString(startAt)),
-      ),
-      getDevidedRow(
-        '종료 날짜',
-        Text(endAt != null ? getDateformatString(endAt!) : "없음"),
-      ),
-      getDevidedRow(
-          '반복 주기', Text(getRepeatMessage(repeatCycle, repeatData) ?? "")),
-      const Divider(),
-      getDevidedRow(
-        '달성 목표',
-        Text(getGoalMessage(achievementType, goal)),
-      ),
-      getDevidedRow(
-        '미션 리스트',
-        Text(missionList.toString()),
-      ),
+      buildCardTable({
+        '달성 목표': Text(getGoalMessage(achievementType, goal)),
+        '미션 리스트': Text(missionList.toString()),
+      }),
     ];
-    final editModeChildren = [
-      getDevidedRow(
-        '이름',
-        TextFormField(
+    final List<Widget> editModeChildren = [
+      buildCardTable({
+        '이름': TextFormField(
           onChanged: (text) {
             setState(() {
               name = text;
@@ -115,15 +103,10 @@ class QuestEditViewState extends State<QuestEditView> {
           decoration: const InputDecoration(hintText: "퀘스트의 이름을 입력하세요"),
           keyboardType: TextInputType.text,
         ),
-      ),
-      getDevidedRow(
-        '태그',
-        TextFormField(),
-      ),
-      const Divider(),
-      getDevidedRow(
-        '시작 날짜',
-        ElevatedButton(
+        '태그': TextFormField(),
+      }),
+      buildCardTable({
+        '시작 날짜': ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.secondary,
               textStyle: TextStyle(
@@ -154,10 +137,7 @@ class QuestEditViewState extends State<QuestEditView> {
           },
           child: Text(getDateformatString(startAt)),
         ),
-      ),
-      getDevidedRow(
-        '종료 날짜',
-        ListView(
+        '종료 날짜': ListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
@@ -212,16 +192,11 @@ class QuestEditViewState extends State<QuestEditView> {
               ),
           ],
         ),
-      ),
-      getDevidedRow(
-        '반복 주기',
-        TextFormField(),
-      ),
-      const Divider(),
-      getDevidedRow(
-        '달성 목표',
-        TextFormField(),
-      ),
+        '반복 주기': TextFormField(),
+      }),
+      buildCardTable({
+        '달성 목표': TextFormField(),
+      }),
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: ElevatedButton(
