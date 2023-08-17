@@ -88,7 +88,7 @@ class QuestEditViewState extends State<QuestEditView> {
       ),
       getDevidedRow(
         '종료 날짜',
-        Text(endAt != null ? getDateformatString(endAt!) : "종료 날짜가 없습니다"),
+        Text(endAt != null ? getDateformatString(endAt!) : "없음"),
       ),
       getDevidedRow(
           '반복 주기', Text(getRepeatMessage(repeatCycle, repeatData) ?? "")),
@@ -124,6 +124,10 @@ class QuestEditViewState extends State<QuestEditView> {
       getDevidedRow(
         '시작 날짜',
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              textStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSecondaryContainer)),
           onPressed: () async {
             final startDate = DateTime.fromMillisecondsSinceEpoch(startAt);
 
@@ -181,6 +185,12 @@ class QuestEditViewState extends State<QuestEditView> {
               Container(margin: const EdgeInsets.symmetric(vertical: 10)),
             if (isFinite)
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    textStyle: TextStyle(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSecondaryContainer)),
                 onPressed: () async {
                   final DateTime? pickedDate = await showDatePicker(
                     context: context,
@@ -215,6 +225,10 @@ class QuestEditViewState extends State<QuestEditView> {
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.tertiary,
+              textStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onTertiary)),
           onPressed: () {
             final validation = validateQuest();
 
@@ -267,6 +281,7 @@ class QuestEditViewState extends State<QuestEditView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('퀘스트 관리'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         elevation: 0.0,
         leading: IconButton(
           icon: const Icon(
