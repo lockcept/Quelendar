@@ -1,8 +1,8 @@
 import 'package:nanoid/nanoid.dart';
 
 class Task {
-  int id;
-  int missionId;
+  String id;
+  String missionId;
   int startAt;
   int? endAt;
   int value;
@@ -27,8 +27,8 @@ enum AchievementType {
 }
 
 class Mission {
-  int id;
-  int questId;
+  String id;
+  String questId;
   int startAt;
   int endAt;
   AchievementType achievementType;

@@ -4,9 +4,7 @@ import 'package:quest_tracker/item/quest_edit_view.dart';
 import 'package:quest_tracker/quest.dart';
 import 'package:quest_tracker/quest_provider.dart';
 
-String getRepeatMessage(Quest quest) {
-  final repeatCycle = quest.repeatCycle;
-  final repeatData = quest.repeatData;
+String? getRepeatMessage(RepeatCycle repeatCycle, List<int> repeatData) {
   switch (repeatCycle) {
     case RepeatCycle.none:
       return "반복 없음";
@@ -15,7 +13,7 @@ String getRepeatMessage(Quest quest) {
       return "${repeatData[0]}일 마다 하루";
     case RepeatCycle.days:
       if (repeatData.isEmpty) break;
-      return "${repeatData[0]}일 씩";
+      return "${repeatData[0]}일 단위로 반복";
     case RepeatCycle.week:
       if (repeatData.isEmpty) break;
       const daysString = ['월', '화', '수', '목', '금', '토', '일'];
@@ -24,7 +22,16 @@ String getRepeatMessage(Quest quest) {
       if (repeatData.isEmpty) break;
       return "매월 ${repeatData[0]}일";
   }
-  return "반복 없음";
+  return null;
+}
+
+String getGoalMessage(AchievementType achievementType, int goal) {
+  switch (achievementType) {
+    case AchievementType.count:
+      return "$goal회";
+    case AchievementType.minute:
+      return "$goal분";
+  }
 }
 
 class QuestItem extends StatelessWidget {
@@ -39,7 +46,7 @@ class QuestItem extends StatelessWidget {
       if (tag != null) return "#${tag.name}";
     });
 
-    final repeatMessage = getRepeatMessage(quest);
+    final repeatMessage = getRepeatMessage(quest.repeatCycle, quest.repeatData);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -71,7 +78,7 @@ class QuestItem extends StatelessWidget {
             child: Text(tagNameList.join((", "))),
           ),
           trailing: Text(
-            repeatMessage,
+            repeatMessage ?? "반복 없음",
             style: TextStyle(
               fontSize: 12,
               color: Theme.of(context).textTheme.bodySmall?.color,

@@ -3,9 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:nanoid/nanoid.dart';
 import 'package:provider/provider.dart';
+import 'package:quest_tracker/item/quest_item.dart';
 import 'package:quest_tracker/quest.dart';
 import 'package:quest_tracker/quest_provider.dart';
-import 'package:quest_tracker/util/get_dateformat_string.dart';
+import 'package:quest_tracker/util/get_format_string.dart';
 import 'package:quest_tracker/util/get_devided_row.dart';
 
 class QuestEditView extends StatefulWidget {
@@ -20,13 +21,15 @@ class QuestEditViewState extends State<QuestEditView> {
   bool isEditMode = false;
   late String id;
   String? name;
-  List<String> tagIdList = [];
-  int? startAt;
-  int? endAt;
-  RepeatCycle? repeatCycle;
-  List<int> repeatData = [];
-  AchievementType? achievementType;
-  int? goal;
+  late List<String> tagIdList;
+  late int startAt;
+  late int? endAt;
+  late RepeatCycle repeatCycle;
+  late List<int> repeatData;
+  late AchievementType achievementType;
+  late int goal;
+
+  late bool isFinite;
 
   @override
   void initState() {
@@ -34,41 +37,37 @@ class QuestEditViewState extends State<QuestEditView> {
 
     id = widget.quest?.id ?? nanoid();
     name = widget.quest?.name;
-    startAt = widget.quest?.startAt;
+    tagIdList = widget.quest?.tagIdList ?? [];
+    startAt = widget.quest?.startAt ?? DateTime.now().millisecondsSinceEpoch;
+    endAt = widget.quest?.endAt;
+    repeatCycle = widget.quest?.repeatCycle ?? RepeatCycle.none;
+    repeatData = widget.quest?.repeatData ?? [];
+    achievementType = widget.quest?.achievementType ?? AchievementType.count;
+    goal = widget.quest?.goal ?? 1;
+
+    isFinite = endAt != null;
+
     log(startAt.toString());
   }
 
-  String? validateName(String? name) {
-    if (name == null || name.isEmpty) return "이름을 입력하세요";
-    return null;
-  }
-
-  bool isStartAtValid() {
-    if (startAt == null) return false;
-    return true;
-  }
-
-  bool isRepeatCycleValid() {
-    if (repeatCycle == null) return false;
-    return true;
-  }
-
-  bool isAchievementTypeValid() {
-    if (achievementType == null) return false;
-    return true;
-  }
-
-  bool isGoalValid() {
-    if (goal == null) return false;
-    return true;
-  }
-
   String? validateQuest() {
-    return validateName(name);
+    if (name == null || name!.isEmpty) return "이름을 입력하세요";
+    if (name!.length > 16) return "이름은 16글자를 넘을 수 없습니다";
+    if (tagIdList.length > 3) return "태그는 최대 3개까지 지정 가능합니다";
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    final tagMap = context.watch<QuestProvider>().tagMap;
+    final tagNameList = tagIdList.map((String id) {
+      final tag = tagMap[id];
+      if (tag != null) return "#${tag.name}";
+    });
+    final missionMap = context.watch<QuestProvider>().missionMap;
+    final missionList =
+        missionMap.values.where((mission) => mission.questId == id).toList();
+
     final viewModeChildren = [
       getDevidedRow(
         '이름',
@@ -79,24 +78,28 @@ class QuestEditViewState extends State<QuestEditView> {
       getDevidedRow(
         '태그',
         Text(
-          tagIdList.toString(),
+          tagNameList.join(", "),
         ),
       ),
+      const Divider(),
       getDevidedRow(
         '시작 날짜',
-        Text(getDateformatString(startAt) ?? "시작 날짜가 없습니다."),
+        Text(getDateformatString(startAt)),
       ),
       getDevidedRow(
         '종료 날짜',
-        Text(getDateformatString(endAt) ?? "종료 날짜가 없습니다."),
+        Text(endAt != null ? getDateformatString(endAt!) : "종료 날짜가 없습니다"),
       ),
       getDevidedRow(
-        '반복 주기',
-        TextFormField(),
-      ),
+          '반복 주기', Text(getRepeatMessage(repeatCycle, repeatData) ?? "")),
+      const Divider(),
       getDevidedRow(
         '달성 목표',
-        TextFormField(),
+        Text(getGoalMessage(achievementType, goal)),
+      ),
+      getDevidedRow(
+        '미션 리스트',
+        Text(missionList.toString()),
       ),
     ];
     final editModeChildren = [
@@ -117,18 +120,84 @@ class QuestEditViewState extends State<QuestEditView> {
         '태그',
         TextFormField(),
       ),
+      const Divider(),
       getDevidedRow(
         '시작 날짜',
-        TextFormField(),
+        ElevatedButton(
+          onPressed: () async {
+            final DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.fromMillisecondsSinceEpoch(startAt),
+              firstDate: DateTime(2023),
+              lastDate: DateTime(2033).subtract(const Duration(days: 1)),
+            );
+
+            if (pickedDate != null) {
+              setState(() {
+                startAt = pickedDate.millisecondsSinceEpoch;
+              });
+            }
+          },
+          child: Text(getDateformatString(startAt)),
+        ),
       ),
       getDevidedRow(
         '종료 날짜',
-        TextFormField(),
+        ListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            DropdownButton<String>(
+              value: isFinite ? "있음" : "없음",
+              onChanged: (value) {
+                setState(() {
+                  if (value == "있음") {
+                    isFinite = true;
+                  } else {
+                    isFinite = false;
+                  }
+                });
+              },
+              items: <String>['있음', '없음']
+                  .map<DropdownMenuItem<String>>(
+                    (String value) => DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    ),
+                  )
+                  .toList(),
+            ),
+            if (isFinite)
+              Container(margin: const EdgeInsets.symmetric(vertical: 10)),
+            if (isFinite)
+              ElevatedButton(
+                onPressed: () async {
+                  final DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: endAt != null
+                        ? DateTime.fromMillisecondsSinceEpoch(endAt!)
+                        : DateTime.now(),
+                    firstDate: DateTime(2023),
+                    lastDate: DateTime(2033).subtract(const Duration(days: 1)),
+                  );
+
+                  if (pickedDate != null) {
+                    setState(() {
+                      startAt = pickedDate.millisecondsSinceEpoch;
+                    });
+                  }
+                },
+                child: Text(
+                    endAt != null ? getDateformatString(endAt!) : "종료 날짜 없음"),
+              ),
+          ],
+        ),
       ),
       getDevidedRow(
         '반복 주기',
         TextFormField(),
       ),
+      const Divider(),
       getDevidedRow(
         '달성 목표',
         TextFormField(),
@@ -138,8 +207,6 @@ class QuestEditViewState extends State<QuestEditView> {
         child: ElevatedButton(
           onPressed: () {
             final validation = validateQuest();
-            log(name.toString());
-            log(validation.toString());
 
             if (validation != null) {
               showDialog(
@@ -166,12 +233,12 @@ class QuestEditViewState extends State<QuestEditView> {
                 id: id,
                 name: name!,
                 tagIdList: tagIdList,
-                startAt: startAt!,
+                startAt: startAt,
                 endAt: endAt,
-                repeatCycle: repeatCycle!,
+                repeatCycle: repeatCycle,
                 repeatData: repeatData,
-                achievementType: achievementType!,
-                goal: goal!,
+                achievementType: achievementType,
+                goal: goal,
               );
 
               context.watch<QuestProvider>().addQuest(quest);
@@ -189,21 +256,19 @@ class QuestEditViewState extends State<QuestEditView> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        title: const Text('퀘스트 관리'),
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
-            color: Theme.of(context).colorScheme.onPrimaryContainer,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           if (!isEditMode)
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.edit,
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
               ),
               onPressed: () => setState(() {
                 isEditMode = true;
