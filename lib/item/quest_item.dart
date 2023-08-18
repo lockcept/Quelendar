@@ -5,24 +5,28 @@ import 'package:quest_tracker/quest.dart';
 import 'package:quest_tracker/quest_provider.dart';
 
 String? getRepeatMessage(RepeatCycle repeatCycle, List<int> repeatData) {
-  switch (repeatCycle) {
-    case RepeatCycle.none:
-      return "반복 없음";
-    case RepeatCycle.dayPerDays:
-      if (repeatData.isEmpty) break;
-      return "${repeatData[0]}일 마다 하루";
-    case RepeatCycle.days:
-      if (repeatData.isEmpty) break;
-      return "${repeatData[0]}일 단위로 반복";
-    case RepeatCycle.week:
-      if (repeatData.isEmpty) break;
-      const daysString = ['월', '화', '수', '목', '금', '토', '일'];
-      return "매주 ${repeatData.map((int idx) => daysString[idx]).join(", ")}요일";
-    case RepeatCycle.month:
-      if (repeatData.isEmpty) break;
-      return "매월 ${repeatData[0]}일";
+  try {
+    switch (repeatCycle) {
+      case RepeatCycle.none:
+        return "반복 없음";
+      case RepeatCycle.dayPerDays:
+        if (repeatData.isEmpty) break;
+        return "${repeatData[0]}일 마다 하루";
+      case RepeatCycle.days:
+        if (repeatData.isEmpty) break;
+        return "${repeatData[0]}일 단위로 반복";
+      case RepeatCycle.week:
+        if (repeatData.isEmpty) break;
+        const daysString = ['월', '화', '수', '목', '금', '토', '일'];
+        return "매주 ${repeatData.map((int idx) => daysString[idx]).join(", ")}요일";
+      case RepeatCycle.month:
+        if (repeatData.isEmpty) break;
+        return "매월 ${repeatData[0]}일";
+    }
+    return null;
+  } catch (e) {
+    return null;
   }
-  return null;
 }
 
 String getGoalMessage(AchievementType achievementType, int goal) {

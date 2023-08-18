@@ -8,6 +8,7 @@ import 'package:quest_tracker/quest.dart';
 import 'package:quest_tracker/quest_provider.dart';
 import 'package:quest_tracker/util/card_table.dart';
 import 'package:quest_tracker/util/get_format_string.dart';
+import 'package:quest_tracker/util/number_scroll_row.dart';
 
 class QuestEditView extends StatefulWidget {
   final Quest? quest;
@@ -54,6 +55,7 @@ class QuestEditViewState extends State<QuestEditView> {
     if (name.isEmpty) return "이름을 입력하세요";
     if (name.length > 16) return "이름은 16글자를 넘을 수 없습니다";
     if (tagIdList.length > 3) return "태그는 최대 3개까지 지정 가능합니다";
+    if (isFinite && endAt == null) return "종료 날짜를 선택해 주세요";
     return null;
   }
 
@@ -81,14 +83,14 @@ class QuestEditViewState extends State<QuestEditView> {
       ),
       CardTable(
         data: {
-          '시작 날짜': Text(getDateformatString(startAt)),
-          '종료 날짜': Text(endAt != null ? getDateformatString(endAt!) : "없음"),
-          '반복 주기': Text(getRepeatMessage(repeatCycle, repeatData) ?? ""),
+          '시작': Text(getDateformatString(startAt)),
+          '종료': Text(endAt != null ? getDateformatString(endAt!) : "없음"),
+          '반복': Text(getRepeatMessage(repeatCycle, repeatData) ?? ""),
         },
       ),
       CardTable(data: {
-        '달성 목표': Text(getGoalMessage(achievementType, goal)),
-        '미션 리스트': Text(missionList.toString()),
+        '목표': Text(getGoalMessage(achievementType, goal)),
+        '미션': Text(missionList.toString()),
       }),
     ];
 
@@ -109,7 +111,7 @@ class QuestEditViewState extends State<QuestEditView> {
         '태그': TextFormField(),
       }),
       CardTable(data: {
-        '시작 날짜': ElevatedButton(
+        '시작': ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.secondary,
               textStyle: TextStyle(
@@ -140,61 +142,103 @@ class QuestEditViewState extends State<QuestEditView> {
           },
           child: Text(getDateformatString(startAt)),
         ),
-        '종료 날짜': Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            DropdownButton<String>(
-              value: isFinite ? "있음" : "없음",
-              onChanged: (value) {
-                setState(() {
-                  if (value == "있음") {
-                    isFinite = true;
-                  } else {
-                    isFinite = false;
-                  }
-                });
-              },
-              items: <String>['있음', '없음']
-                  .map<DropdownMenuItem<String>>(
-                    (String value) => DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    ),
-                  )
-                  .toList(),
-            ),
-            if (isFinite)
-              Container(margin: const EdgeInsets.symmetric(vertical: 10)),
-            if (isFinite)
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    textStyle: TextStyle(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSecondaryContainer)),
-                onPressed: () async {
-                  final DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: endAt != null
-                        ? DateTime.fromMillisecondsSinceEpoch(endAt!)
-                        : DateTime.now(),
-                    firstDate: DateTime.fromMillisecondsSinceEpoch(startAt),
-                    lastDate: DateTime(2033).subtract(const Duration(days: 1)),
-                  );
-
-                  if (pickedDate != null) {
-                    setState(() {
-                      endAt = pickedDate.millisecondsSinceEpoch;
-                    });
-                  }
-                },
-                child: Text(
-                    endAt != null ? getDateformatString(endAt!) : "종료 날짜 설정"),
-              ),
-          ],
+        '종료하기': DropdownButton<String>(
+          value: isFinite ? "있음" : "없음",
+          onChanged: (value) {
+            setState(() {
+              if (value == "있음") {
+                isFinite = true;
+              } else {
+                isFinite = false;
+                endAt = null;
+              }
+            });
+          },
+          items: <String>['있음', '없음']
+              .map<DropdownMenuItem<String>>(
+                (String value) => DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                ),
+              )
+              .toList(),
         ),
-        '반복 주기': TextFormField(),
+        if (isFinite)
+          "종료": ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                textStyle: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondaryContainer)),
+            onPressed: () async {
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: endAt != null
+                    ? DateTime.fromMillisecondsSinceEpoch(endAt!)
+                    : DateTime.now(),
+                firstDate: DateTime.fromMillisecondsSinceEpoch(startAt),
+                lastDate: DateTime(2033).subtract(const Duration(days: 1)),
+              );
+
+              if (pickedDate != null) {
+                setState(() {
+                  endAt = pickedDate.millisecondsSinceEpoch;
+                });
+              }
+            },
+            child:
+                Text(endAt != null ? getDateformatString(endAt!) : "종료 날짜 설정"),
+          ),
+        '반복': DropdownButton<String>(
+          value: repeatCycle.label,
+          onChanged: (value) {
+            setState(() {
+              if (value != repeatCycle.label) repeatData = [];
+              repeatCycle = RepeatCycle.getByLabel(value!);
+            });
+          },
+          items: RepeatCycle.values
+              .map((value) {
+                return value.label;
+              })
+              .map<DropdownMenuItem<String>>(
+                (String value) => DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                ),
+              )
+              .toList(),
+        ),
+        if (repeatCycle != RepeatCycle.none)
+          '반복 설정': () {
+            final firstElement = repeatData.isNotEmpty ? repeatData[0] : null;
+            switch (repeatCycle) {
+              case RepeatCycle.none:
+                return const Text("반복 없음");
+              case RepeatCycle.month:
+                return NumberScrollRow(
+                  defaultValue: firstElement ?? 1,
+                  onChanged: (value) => setState(() => repeatData = [value]),
+                  leadingText: '일',
+                  maxValue: 28,
+                );
+              case RepeatCycle.week:
+                return const Text("반복 없음");
+              case RepeatCycle.dayPerDays:
+                return NumberScrollRow(
+                  defaultValue: firstElement ?? 1,
+                  onChanged: (value) => setState(() => repeatData = [value]),
+                  leadingText: '일 마다',
+                  maxValue: 50,
+                );
+              case RepeatCycle.days:
+                return NumberScrollRow(
+                  defaultValue: firstElement ?? 1,
+                  onChanged: (value) => setState(() => repeatData = [value]),
+                  leadingText: '일에 걸쳐',
+                  maxValue: 50,
+                );
+            }
+          }()
       }),
       CardTable(data: {
         '달성 목표': TextFormField(),

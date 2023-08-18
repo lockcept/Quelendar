@@ -54,14 +54,20 @@ class Tag {
 }
 
 enum RepeatCycle {
-  month('month'),
-  week('week'),
-  days('days'),
-  dayPerDays('dayPerDays'),
-  none('none');
+  month('month', "매달"),
+  week('week', "매주"),
+  dayPerDays('dayPerDays', "며칠마다"),
+  days('days', "며칠에 걸쳐"),
+  none('none', "반복 없음");
 
-  const RepeatCycle(this.type);
+  const RepeatCycle(this.type, this.label);
   final String type;
+  final String label;
+
+  factory RepeatCycle.getByLabel(String label) {
+    return RepeatCycle.values.firstWhere((value) => value.label == label,
+        orElse: () => RepeatCycle.none);
+  }
 }
 
 class Quest {
