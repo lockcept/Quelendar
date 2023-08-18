@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:quest_tracker/item/quest_item.dart';
 import 'package:quest_tracker/quest.dart';
 import 'package:quest_tracker/quest_provider.dart';
-import 'package:quest_tracker/util/get_devided_row.dart';
+import 'package:quest_tracker/util/card_table.dart';
 import 'package:quest_tracker/util/get_format_string.dart';
 
 class QuestEditView extends StatefulWidget {
@@ -69,8 +69,8 @@ class QuestEditViewState extends State<QuestEditView> {
         missionMap.values.where((mission) => mission.questId == id).toList();
 
     final viewModeChildren = [
-      buildCardTable(
-        {
+      CardTable(
+        data: {
           '이름': Text(
             name.toString(),
           ),
@@ -79,20 +79,20 @@ class QuestEditViewState extends State<QuestEditView> {
           ),
         },
       ),
-      buildCardTable(
-        {
+      CardTable(
+        data: {
           '시작 날짜': Text(getDateformatString(startAt)),
           '종료 날짜': Text(endAt != null ? getDateformatString(endAt!) : "없음"),
           '반복 주기': Text(getRepeatMessage(repeatCycle, repeatData) ?? ""),
         },
       ),
-      buildCardTable({
+      CardTable(data: {
         '달성 목표': Text(getGoalMessage(achievementType, goal)),
         '미션 리스트': Text(missionList.toString()),
       }),
     ];
     final List<Widget> editModeChildren = [
-      buildCardTable({
+      CardTable(data: {
         '이름': TextFormField(
           onChanged: (text) {
             setState(() {
@@ -105,7 +105,7 @@ class QuestEditViewState extends State<QuestEditView> {
         ),
         '태그': TextFormField(),
       }),
-      buildCardTable({
+      CardTable(data: {
         '시작 날짜': ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -194,7 +194,7 @@ class QuestEditViewState extends State<QuestEditView> {
         ),
         '반복 주기': TextFormField(),
       }),
-      buildCardTable({
+      CardTable(data: {
         '달성 목표': TextFormField(),
       }),
       Padding(
