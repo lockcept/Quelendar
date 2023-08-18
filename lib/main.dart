@@ -16,10 +16,11 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.from(
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF40F909),
-              brightness: Brightness.light)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF40F909), brightness: Brightness.light),
+        fontFamily: "NotoSansKr",
+      ),
       home: const QuestTracker(),
     );
   }
