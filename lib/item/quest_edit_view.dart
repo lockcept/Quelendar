@@ -137,9 +137,8 @@ class QuestEditViewState extends State<QuestEditView> {
           },
           child: Text(getDateformatString(startAt)),
         ),
-        '종료 날짜': ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
+        '종료 날짜': Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             DropdownButton<String>(
               value: isFinite ? "있음" : "없음",
