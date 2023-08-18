@@ -15,7 +15,7 @@ class CardTableState extends State<CardTable> {
     List<Widget> childrenWithoutDividers = widget.data.entries.map(
       (entry) {
         return Container(
-          constraints: const BoxConstraints(minHeight: 40.0),
+          constraints: const BoxConstraints(minHeight: 30.0),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -48,12 +48,15 @@ class CardTableState extends State<CardTable> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Column(
-          children: buildChildrenWithDividers(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Card(
+        elevation: 2.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            children: buildChildrenWithDividers(),
+          ),
         ),
       ),
     );

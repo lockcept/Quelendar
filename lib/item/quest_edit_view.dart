@@ -91,6 +91,7 @@ class QuestEditViewState extends State<QuestEditView> {
         '미션 리스트': Text(missionList.toString()),
       }),
     ];
+
     final List<Widget> editModeChildren = [
       CardTable(data: {
         '이름': TextFormField(
@@ -100,7 +101,9 @@ class QuestEditViewState extends State<QuestEditView> {
             });
           },
           initialValue: name,
-          decoration: const InputDecoration(hintText: "퀘스트의 이름을 입력하세요"),
+          decoration: const InputDecoration(
+            hintText: "퀘스트의 이름을 입력하세요",
+          ),
           keyboardType: TextInputType.text,
         ),
         '태그': TextFormField(),
