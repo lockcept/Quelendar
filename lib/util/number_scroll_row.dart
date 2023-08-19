@@ -5,14 +5,14 @@ import 'package:numberpicker/numberpicker.dart';
 class NumberScrollRow extends StatelessWidget {
   final int defaultValue;
   final void Function(int) onChanged;
-  final String leadingText;
+  final String trailingText;
   final int maxValue;
 
   const NumberScrollRow({
     Key? key,
     required this.defaultValue,
     required this.onChanged,
-    required this.leadingText,
+    required this.trailingText,
     required this.maxValue,
   }) : super(key: key);
 
@@ -45,7 +45,7 @@ class NumberScrollRow extends StatelessWidget {
         const SizedBox(
           width: 8.0,
         ),
-        Expanded(flex: 2, child: Text(leadingText)),
+        Expanded(flex: 2, child: Text(trailingText)),
       ],
     );
   }

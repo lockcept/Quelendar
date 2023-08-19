@@ -7,6 +7,7 @@ import 'package:quest_tracker/item/quest_item.dart';
 import 'package:quest_tracker/quest.dart';
 import 'package:quest_tracker/quest_provider.dart';
 import 'package:quest_tracker/util/card_table.dart';
+import 'package:quest_tracker/util/days_selector.dart';
 import 'package:quest_tracker/util/get_format_string.dart';
 import 'package:quest_tracker/util/number_scroll_row.dart';
 
@@ -218,23 +219,30 @@ class QuestEditViewState extends State<QuestEditView> {
                 return NumberScrollRow(
                   defaultValue: firstElement ?? 1,
                   onChanged: (value) => setState(() => repeatData = [value]),
-                  leadingText: '일',
+                  trailingText: '일',
                   maxValue: 28,
                 );
               case RepeatCycle.week:
-                return const Text("반복 없음");
+                return DaysSelector(
+                  selectedIndices: repeatData,
+                  onSelectionChanged: (selectedIndices) {
+                    setState(() {
+                      repeatData = List.from(selectedIndices);
+                    });
+                  },
+                );
               case RepeatCycle.dayPerDays:
                 return NumberScrollRow(
                   defaultValue: firstElement ?? 1,
                   onChanged: (value) => setState(() => repeatData = [value]),
-                  leadingText: '일 마다',
+                  trailingText: '일 마다',
                   maxValue: 50,
                 );
               case RepeatCycle.days:
                 return NumberScrollRow(
                   defaultValue: firstElement ?? 1,
                   onChanged: (value) => setState(() => repeatData = [value]),
-                  leadingText: '일에 걸쳐',
+                  trailingText: '일에 걸쳐',
                   maxValue: 50,
                 );
             }
@@ -303,6 +311,10 @@ class QuestEditViewState extends State<QuestEditView> {
       appBar: AppBar(
         title: const Text('퀘스트 관리'),
         backgroundColor: Theme.of(context).colorScheme.primary,
+        titleTextStyle: TextStyle(
+          fontSize: 24,
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
         elevation: 0.0,
         leading: IconButton(
           icon: const Icon(
