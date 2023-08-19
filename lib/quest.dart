@@ -19,11 +19,17 @@ class Task {
 }
 
 enum AchievementType {
-  minute('minute'),
-  count('count');
+  minute('minute', '분'),
+  count('count', '회');
 
-  const AchievementType(this.id);
+  const AchievementType(this.id, this.label);
   final String id;
+  final String label;
+
+  factory AchievementType.getByLabel(String label) {
+    return AchievementType.values.firstWhere((value) => value.label == label,
+        orElse: () => AchievementType.count);
+  }
 }
 
 class Mission {

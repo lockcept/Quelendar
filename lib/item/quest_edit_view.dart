@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nanoid/nanoid.dart';
 import 'package:provider/provider.dart';
 import 'package:quest_tracker/item/quest_item.dart';
@@ -249,7 +250,46 @@ class QuestEditViewState extends State<QuestEditView> {
           }()
       }),
       CardTable(data: {
-        '달성 목표': TextFormField(),
+        '달성 목표': Row(children: [
+          Expanded(
+            flex: 8,
+            child: TextFormField(
+              onChanged: (value) {
+                final number = int.tryParse(value) ?? 0;
+                if (number == goal) return;
+
+                setState(() {
+                  goal = number;
+                });
+              },
+              keyboardType: TextInputType.number,
+              initialValue: goal.toString(),
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: DropdownButton<String>(
+              value: achievementType.label,
+              onChanged: (value) {
+                setState(() {
+                  achievementType = AchievementType.getByLabel(value!);
+                });
+              },
+              items: AchievementType.values
+                  .map((value) {
+                    return value.label;
+                  })
+                  .map<DropdownMenuItem<String>>(
+                    (String value) => DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ]),
       }),
       Padding(
         padding: const EdgeInsets.all(8.0),

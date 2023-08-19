@@ -30,12 +30,7 @@ String? getRepeatMessage(RepeatCycle repeatCycle, List<int> repeatData) {
 }
 
 String getGoalMessage(AchievementType achievementType, int goal) {
-  switch (achievementType) {
-    case AchievementType.count:
-      return "$goal회";
-    case AchievementType.minute:
-      return "$goal분";
-  }
+  return "$goal${achievementType.label}";
 }
 
 class QuestItem extends StatelessWidget {
