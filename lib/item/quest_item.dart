@@ -34,15 +34,21 @@ String getGoalMessage(AchievementType achievementType, int goal) {
 }
 
 class QuestItem extends StatelessWidget {
-  final Quest quest;
-  const QuestItem({required this.quest, super.key});
+  final String questId;
+  const QuestItem({required this.questId, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final tagMap = context.watch<QuestProvider>().tagMap;
+    final questProvider = context.watch<QuestProvider>();
+
+    final quest = questProvider.questMap[questId];
+    if (quest == null) return Container();
+
+    final tagMap = questProvider.tagMap;
     final tagNameList = quest.tagIdList.map((String id) {
       final tag = tagMap[id];
       if (tag != null) return "#${tag.name}";
+      return "";
     });
 
     final repeatMessage = getRepeatMessage(quest.repeatCycle, quest.repeatData);
@@ -76,7 +82,7 @@ class QuestItem extends StatelessWidget {
             child: Text(tagNameList.join((", "))),
           ),
           trailing: Text(
-            repeatMessage ?? "반복 없음",
+            repeatMessage ?? "없음",
             style: TextStyle(
               fontSize: 12,
               color: Theme.of(context).textTheme.bodySmall?.color,
@@ -85,7 +91,7 @@ class QuestItem extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => QuestEditView(quest: quest)),
+              MaterialPageRoute(builder: (context) => QuestEditView(questId: questId)),
             );
           },
         ),

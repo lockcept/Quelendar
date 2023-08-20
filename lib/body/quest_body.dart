@@ -22,7 +22,7 @@ class QuestBody extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               itemCount: itemCount,
               itemBuilder: (BuildContext context, int index) {
-                return QuestItem(quest: questMap.values.toList()[index]);
+                return QuestItem(questId: questMap.values.toList()[index].id);
               },
             )
           : const Center(child: Text('퀘스트를 생성해보세요.')),

@@ -13,16 +13,14 @@ import 'package:quest_tracker/util/get_format_string.dart';
 import 'package:quest_tracker/util/number_scroll_row.dart';
 
 class QuestEditView extends StatefulWidget {
-  final Quest? quest;
-  const QuestEditView({this.quest, super.key});
+  final String questId;
+  const QuestEditView({required this.questId, super.key});
 
   @override
   QuestEditViewState createState() => QuestEditViewState();
 }
 
 class QuestEditViewState extends State<QuestEditView> {
-  late Quest? quest;
-
   bool isEditMode = false;
   late String id;
   late String name;
@@ -38,11 +36,8 @@ class QuestEditViewState extends State<QuestEditView> {
   late List<String> tagNameList;
   List<GlobalKey> tagNameFormKeyList = [];
 
-  @override
-  void initState() {
-    super.initState();
-
-    quest = widget.quest;
+  void setEditState() {
+    final quest = context.read<QuestProvider>().questMap[widget.questId];
 
     id = quest?.id ?? nanoid();
     name = quest?.name ?? "";
@@ -67,6 +62,11 @@ class QuestEditViewState extends State<QuestEditView> {
     }).toList();
   }
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   String? validateQuest() {
     if (name.isEmpty) return "이름을 입력하세요";
     if (name.length > 16) return "이름은 16글자를 넘을 수 없습니다";
@@ -79,6 +79,7 @@ class QuestEditViewState extends State<QuestEditView> {
   @override
   Widget build(BuildContext context) {
     final questProvider = context.watch<QuestProvider>();
+    final Quest? quest = questProvider.questMap[widget.questId];
 
     final List<Widget> listViewChildren = (() {
       if (isEditMode) {
@@ -250,6 +251,7 @@ class QuestEditViewState extends State<QuestEditView> {
                       onSelectionChanged: (selectedIndices) {
                         setState(() {
                           repeatData = List.from(selectedIndices);
+                          repeatData.sort();
                         });
                       },
                     );
@@ -354,8 +356,11 @@ class QuestEditViewState extends State<QuestEditView> {
                     goal: goal,
                   );
 
-                  context.watch<QuestProvider>().addQuest(quest);
+                  log("1");
+                  questProvider.addQuest(quest);
+                  log("2");
                   setState(() {
+                    log("3");
                     isEditMode = false;
                   });
                 } catch (e) {
@@ -369,10 +374,10 @@ class QuestEditViewState extends State<QuestEditView> {
       } else {
         if (quest == null) return <Widget>[];
 
-        final Quest viewQuest = quest!;
+        final Quest viewQuest = quest;
 
         final tagMap = questProvider.tagMap;
-        final tagNameList = tagIdList.map((String id) {
+        final tagNameList = viewQuest.tagIdList.map((String id) {
           final tag = tagMap[id];
           if (tag != null) return tag.name;
           return "";
@@ -409,7 +414,7 @@ class QuestEditViewState extends State<QuestEditView> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         titleTextStyle: TextStyle(
           fontSize: 24,
           color: Theme.of(context).colorScheme.onBackground,
@@ -430,6 +435,7 @@ class QuestEditViewState extends State<QuestEditView> {
               ),
               color: Theme.of(context).colorScheme.primary,
               onPressed: () => setState(() {
+                setEditState();
                 isEditMode = true;
               }),
             )
