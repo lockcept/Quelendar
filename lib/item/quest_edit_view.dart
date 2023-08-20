@@ -10,7 +10,6 @@ import 'package:quest_tracker/util/card_table.dart';
 import 'package:quest_tracker/util/days_selector.dart';
 import 'package:quest_tracker/util/get_format_string.dart';
 import 'package:quest_tracker/util/number_scroll_row.dart';
-import 'package:quest_tracker/util/random_id.dart';
 
 class QuestEditView extends StatefulWidget {
   final String questId;
@@ -21,8 +20,6 @@ class QuestEditView extends StatefulWidget {
 }
 
 class QuestEditViewState extends State<QuestEditView> {
-  late String id;
-
   late String name;
   late int startAt;
   late int? endAt;
@@ -40,7 +37,6 @@ class QuestEditViewState extends State<QuestEditView> {
   void setEditState() {
     final quest = context.read<QuestProvider>().questMap[widget.questId];
 
-    id = quest?.id ?? randomId();
     name = quest?.name ?? "";
     startAt = quest?.startAt ?? DateTime.now().millisecondsSinceEpoch;
     endAt = quest?.endAt;
@@ -66,6 +62,7 @@ class QuestEditViewState extends State<QuestEditView> {
   @override
   void initState() {
     super.initState();
+    setEditState();
   }
 
   String? validateQuest() {
@@ -83,7 +80,7 @@ class QuestEditViewState extends State<QuestEditView> {
     final Quest? quest = questProvider.questMap[widget.questId];
 
     final List<Widget> listViewChildren = (() {
-      if (isEditMode) {
+      if (isEditMode || quest == null) {
         return [
           CardTable(data: {
             '이름': TextFormField(
@@ -348,7 +345,7 @@ class QuestEditViewState extends State<QuestEditView> {
 
                 try {
                   final quest = Quest(
-                    id: id,
+                    id: widget.questId,
                     name: name,
                     tagIdList: tagIdList,
                     startAt: startAt,
@@ -372,25 +369,21 @@ class QuestEditViewState extends State<QuestEditView> {
           ),
         ];
       } else {
-        if (quest == null) return <Widget>[];
-
-        final Quest viewQuest = quest;
-
         final tagMap = questProvider.tagMap;
-        final tagNameList = viewQuest.tagIdList.map((String id) {
+        final tagNameList = quest.tagIdList.map((String id) {
           final tag = tagMap[id];
           if (tag != null) return tag.name;
           return "";
         }).toList();
 
         final missionMap = questProvider.missionMap;
-        final missionList = missionMap.values.where((mission) => mission.questId == viewQuest.id).toList();
+        final missionList = missionMap.values.where((mission) => mission.questId == quest.id).toList();
 
         return [
           CardTable(
             data: {
               '이름': Text(
-                viewQuest.name.toString(),
+                quest.name.toString(),
               ),
               '태그': Text(
                 tagNameList.map((name) => '#$name').join(", "),
@@ -399,13 +392,13 @@ class QuestEditViewState extends State<QuestEditView> {
           ),
           CardTable(
             data: {
-              '시작': Text(getDateformatString(viewQuest.startAt)),
-              '종료': Text(viewQuest.endAt != null ? getDateformatString(viewQuest.endAt!) : "없음"),
-              '반복': Text(getRepeatMessage(viewQuest.repeatCycle, viewQuest.repeatData) ?? ""),
+              '시작': Text(getDateformatString(quest.startAt)),
+              '종료': Text(quest.endAt != null ? getDateformatString(quest.endAt!) : "없음"),
+              '반복': Text(getRepeatMessage(quest.repeatCycle, quest.repeatData) ?? ""),
             },
           ),
           CardTable(data: {
-            '목표': Text(getGoalMessage(viewQuest.achievementType, viewQuest.goal)),
+            '목표': Text(getGoalMessage(quest.achievementType, quest.goal)),
             '미션': Text(missionList.toString()),
           }),
         ];
@@ -428,7 +421,7 @@ class QuestEditViewState extends State<QuestEditView> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          if (!isEditMode)
+          if (!isEditMode && quest != null)
             IconButton(
               icon: const Icon(
                 Icons.edit,
