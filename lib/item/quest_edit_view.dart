@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanoid/nanoid.dart';
 import 'package:provider/provider.dart';
 import 'package:quest_tracker/item/quest_item.dart';
 import 'package:quest_tracker/quest.dart';
@@ -11,6 +10,7 @@ import 'package:quest_tracker/util/card_table.dart';
 import 'package:quest_tracker/util/days_selector.dart';
 import 'package:quest_tracker/util/get_format_string.dart';
 import 'package:quest_tracker/util/number_scroll_row.dart';
+import 'package:quest_tracker/util/random_id.dart';
 
 class QuestEditView extends StatefulWidget {
   final String questId;
@@ -21,10 +21,9 @@ class QuestEditView extends StatefulWidget {
 }
 
 class QuestEditViewState extends State<QuestEditView> {
-  bool isEditMode = false;
   late String id;
+
   late String name;
-  late List<String> tagIdList;
   late int startAt;
   late int? endAt;
   late RepeatCycle repeatCycle;
@@ -36,12 +35,13 @@ class QuestEditViewState extends State<QuestEditView> {
   late List<String> tagNameList;
   List<GlobalKey> tagNameFormKeyList = [];
 
+  bool isEditMode = false;
+
   void setEditState() {
     final quest = context.read<QuestProvider>().questMap[widget.questId];
 
-    id = quest?.id ?? nanoid();
+    id = quest?.id ?? randomId();
     name = quest?.name ?? "";
-    tagIdList = quest?.tagIdList ?? [];
     startAt = quest?.startAt ?? DateTime.now().millisecondsSinceEpoch;
     endAt = quest?.endAt;
     repeatCycle = quest?.repeatCycle ?? RepeatCycle.none;
@@ -51,6 +51,7 @@ class QuestEditViewState extends State<QuestEditView> {
 
     isFinite = endAt != null;
 
+    final tagIdList = quest?.tagIdList ?? [];
     final tagMap = context.read<QuestProvider>().tagMap;
     tagNameList = tagIdList.map((String id) {
       final tag = tagMap[id];
@@ -70,8 +71,8 @@ class QuestEditViewState extends State<QuestEditView> {
   String? validateQuest() {
     if (name.isEmpty) return "이름을 입력하세요";
     if (name.length > 16) return "이름은 16글자를 넘을 수 없습니다";
-    if (tagIdList.length > 3) return "태그는 최대 3개까지 지정 가능합니다";
-    if (tagIdList.length != tagIdList.toSet().length) return "중복된 태그가 있습니다";
+    if (tagNameList.length > 3) return "태그는 최대 3개까지 지정 가능합니다";
+    if (tagNameList.length != tagNameList.toSet().length) return "중복된 태그가 있습니다";
     if (isFinite && endAt == null) return "종료 날짜를 선택해 주세요";
     return null;
   }
@@ -100,8 +101,6 @@ class QuestEditViewState extends State<QuestEditView> {
             '태그': Column(
               children: [
                 ...List.generate(tagNameList.length, (index) {
-                  log(tagNameList[index]);
-
                   return Row(
                     children: [
                       Expanded(
@@ -343,6 +342,10 @@ class QuestEditViewState extends State<QuestEditView> {
                   return;
                 }
 
+                final tagIdList = tagNameList.map((tagName) {
+                  return questProvider.getTagByName(tagName).id;
+                }).toList();
+
                 try {
                   final quest = Quest(
                     id: id,
@@ -356,11 +359,8 @@ class QuestEditViewState extends State<QuestEditView> {
                     goal: goal,
                   );
 
-                  log("1");
                   questProvider.addQuest(quest);
-                  log("2");
                   setState(() {
-                    log("3");
                     isEditMode = false;
                   });
                 } catch (e) {

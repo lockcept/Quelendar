@@ -1,5 +1,3 @@
-import 'package:nanoid/nanoid.dart';
-
 class Task {
   String id;
   String missionId;
@@ -54,8 +52,6 @@ class Tag {
   String name;
 
   Tag({required this.id, required this.name});
-
-  Tag.create({required this.name}) : id = nanoid();
 }
 
 enum RepeatCycle {
