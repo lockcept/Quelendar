@@ -63,8 +63,7 @@ class QuestItem extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
           title: Text(
             quest.name,
             style: const TextStyle(
@@ -86,8 +85,7 @@ class QuestItem extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => QuestEditView(quest: quest)),
+              MaterialPageRoute(builder: (context) => QuestEditView(quest: quest)),
             );
           },
         ),

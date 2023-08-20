@@ -17,8 +17,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF40F909), brightness: Brightness.light),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF40F909), brightness: Brightness.light),
         fontFamily: "NotoSansKr",
       ),
       home: const QuestTracker(),

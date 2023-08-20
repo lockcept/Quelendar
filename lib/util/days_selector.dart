@@ -30,9 +30,7 @@ class DaysSelector extends StatelessWidget {
             onSelectionChanged(updatedSelection);
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: selectedIndices.contains(index)
-                ? Theme.of(context).colorScheme.primary
-                : Colors.grey,
+            backgroundColor: selectedIndices.contains(index) ? Theme.of(context).colorScheme.primary : Colors.grey,
           ),
           child: Text(dayLabels[index]),
         );

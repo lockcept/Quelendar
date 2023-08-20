@@ -27,8 +27,7 @@ enum AchievementType {
   final String label;
 
   factory AchievementType.getByLabel(String label) {
-    return AchievementType.values.firstWhere((value) => value.label == label,
-        orElse: () => AchievementType.count);
+    return AchievementType.values.firstWhere((value) => value.label == label, orElse: () => AchievementType.count);
   }
 }
 
@@ -71,8 +70,7 @@ enum RepeatCycle {
   final String label;
 
   factory RepeatCycle.getByLabel(String label) {
-    return RepeatCycle.values.firstWhere((value) => value.label == label,
-        orElse: () => RepeatCycle.none);
+    return RepeatCycle.values.firstWhere((value) => value.label == label, orElse: () => RepeatCycle.none);
   }
 }
 
