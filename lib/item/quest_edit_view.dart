@@ -409,17 +409,17 @@ class QuestEditViewState extends State<QuestEditView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('퀘스트 관리'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.background,
         titleTextStyle: TextStyle(
           fontSize: 24,
-          color: Theme.of(context).colorScheme.onPrimary,
+          color: Theme.of(context).colorScheme.onBackground,
         ),
         elevation: 0.0,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,
           ),
+          color: Theme.of(context).colorScheme.primary,
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
@@ -428,6 +428,7 @@ class QuestEditViewState extends State<QuestEditView> {
               icon: const Icon(
                 Icons.edit,
               ),
+              color: Theme.of(context).colorScheme.primary,
               onPressed: () => setState(() {
                 isEditMode = true;
               }),
