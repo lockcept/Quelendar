@@ -84,6 +84,7 @@ class QuestEditViewState extends State<QuestEditView> {
         return [
           CardTable(data: {
             '이름': TextFormField(
+              onTapOutside: (event) => FocusScope.of(context).unfocus(),
               onChanged: (text) {
                 setState(() {
                   name = text;
@@ -103,6 +104,7 @@ class QuestEditViewState extends State<QuestEditView> {
                       Expanded(
                         key: tagNameFormKeyList[index],
                         child: TextFormField(
+                          onTapOutside: (event) => FocusScope.of(context).unfocus(),
                           initialValue: tagNameList[index],
                           onChanged: (text) {
                             setState(() {
@@ -273,6 +275,7 @@ class QuestEditViewState extends State<QuestEditView> {
               Expanded(
                 flex: 8,
                 child: TextFormField(
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   onChanged: (value) {
                     final number = int.tryParse(value) ?? 0;
                     if (number == goal) return;
