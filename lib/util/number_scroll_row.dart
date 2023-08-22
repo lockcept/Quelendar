@@ -21,7 +21,7 @@ class NumberScrollRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          flex: 8,
+          flex: 7,
           child: ScrollConfiguration(
             behavior: ScrollConfiguration.of(context).copyWith(
               dragDevices: {
@@ -36,8 +36,7 @@ class NumberScrollRow extends StatelessWidget {
               onChanged: (value) => onChanged(value),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer),
+                border: Border.all(color: Theme.of(context).colorScheme.onPrimaryContainer),
               ),
             ),
           ),
@@ -45,7 +44,7 @@ class NumberScrollRow extends StatelessWidget {
         const SizedBox(
           width: 8.0,
         ),
-        Expanded(flex: 2, child: Text(trailingText)),
+        Expanded(flex: 3, child: Text(trailingText)),
       ],
     );
   }

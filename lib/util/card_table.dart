@@ -17,7 +17,7 @@ class CardTableState extends State<CardTable> {
         return Container(
           constraints: const BoxConstraints(minHeight: 30.0),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             child: Row(
               children: [
                 Expanded(
@@ -25,7 +25,7 @@ class CardTableState extends State<CardTable> {
                   child: Text(entry.key),
                 ),
                 const SizedBox(
-                  width: 8.0,
+                  width: 6.0,
                   height: 24,
                 ),
                 Expanded(flex: 7, child: entry.value),

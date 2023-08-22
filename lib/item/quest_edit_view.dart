@@ -113,7 +113,6 @@ class QuestEditViewState extends State<QuestEditView> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 8.0),
                       IconButton(
                         icon: const Icon(Icons.remove),
                         onPressed: () {
