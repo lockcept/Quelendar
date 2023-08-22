@@ -1,4 +1,4 @@
-# quest_tracker
+# Quelendar
 
 [@lockcept](https://github.com/lockcept)
 

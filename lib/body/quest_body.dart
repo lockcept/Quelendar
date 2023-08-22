@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quest_tracker/item/quest_edit_view.dart';
-import 'package:quest_tracker/item/quest_item.dart';
-import 'package:quest_tracker/quest_provider.dart';
-import 'package:quest_tracker/util/random_id.dart';
+import 'package:quelendar/item/quest_edit_view.dart';
+import 'package:quelendar/item/quest_item.dart';
+import 'package:quelendar/quest_provider.dart';
+import 'package:quelendar/util/random_id.dart';
 
 class QuestBody extends StatelessWidget {
   const QuestBody({super.key});

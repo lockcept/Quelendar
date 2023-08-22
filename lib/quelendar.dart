@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:quest_tracker/body/home_body.dart';
+import 'package:quelendar/body/home_body.dart';
 
 import 'body/quest_body.dart';
 import 'body/setting_body.dart';
 
-class QuestTracker extends StatefulWidget {
-  const QuestTracker({super.key});
+class Quelendar extends StatefulWidget {
+  const Quelendar({super.key});
 
   @override
-  QuestTrackerState createState() => QuestTrackerState();
+  QuelendarState createState() => QuelendarState();
 }
 
-class QuestTrackerState extends State<QuestTracker> {
+class QuelendarState extends State<Quelendar> {
   int currentPageIndex = 1;
 
   final bodyList = <Widget>[

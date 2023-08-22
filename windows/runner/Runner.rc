@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "quest_tracker" "\0"
+            VALUE "FileDescription", "quelendar" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "quest_tracker" "\0"
+            VALUE "InternalName", "quelendar" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "quest_tracker.exe" "\0"
-            VALUE "ProductName", "quest_tracker" "\0"
+            VALUE "OriginalFilename", "quelendar.exe" "\0"
+            VALUE "ProductName", "quelendar" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

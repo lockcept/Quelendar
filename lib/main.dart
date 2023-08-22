@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quest_tracker/quest_provider.dart';
-import 'package:quest_tracker/quest_tracker.dart';
+import 'package:quelendar/quelendar.dart';
+import 'package:quelendar/quest_provider.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -20,7 +20,7 @@ class App extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF40F909), brightness: Brightness.light),
         fontFamily: "NotoSansKr",
       ),
-      home: const QuestTracker(),
+      home: const Quelendar(),
     );
   }
 }

@@ -1,4 +1,4 @@
-package com.example.quest_tracker
+package com.example.quelendar
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quest_tracker/quest.dart';
+import 'package:quelendar/quest.dart';
 
 class MissionItem extends StatelessWidget {
   final Mission mission;

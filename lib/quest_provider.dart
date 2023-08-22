@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quest_tracker/quest.dart';
-import 'package:quest_tracker/quest_dummy.dart';
-import 'package:quest_tracker/util/random_id.dart';
+import 'package:quelendar/quest.dart';
+import 'package:quelendar/quest_dummy.dart';
+import 'package:quelendar/util/random_id.dart';
 
 class QuestProvider with ChangeNotifier {
   Map<String, Quest> questMap = {};

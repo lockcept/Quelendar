@@ -1,4 +1,4 @@
-import 'package:quest_tracker/quest.dart';
+import 'package:quelendar/quest.dart';
 
 final tag1 = Tag(id: 'smANMTFuNx', name: '자기_계발');
 final tag2 = Tag(id: 'K1MOt3PaBl', name: '개발');

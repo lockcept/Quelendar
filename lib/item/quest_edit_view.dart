@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:quest_tracker/item/quest_item.dart';
-import 'package:quest_tracker/quest.dart';
-import 'package:quest_tracker/quest_provider.dart';
-import 'package:quest_tracker/util/card_table.dart';
-import 'package:quest_tracker/util/days_selector.dart';
-import 'package:quest_tracker/util/get_format_string.dart';
-import 'package:quest_tracker/util/number_scroll_row.dart';
+import 'package:quelendar/item/quest_item.dart';
+import 'package:quelendar/quest.dart';
+import 'package:quelendar/quest_provider.dart';
+import 'package:quelendar/util/card_table.dart';
+import 'package:quelendar/util/days_selector.dart';
+import 'package:quelendar/util/get_format_string.dart';
+import 'package:quelendar/util/number_scroll_row.dart';
 
 class QuestEditView extends StatefulWidget {
   final String questId;
