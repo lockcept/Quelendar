@@ -34,7 +34,6 @@ class Mission {
   String questId;
   int startAt;
   int endAt;
-  AchievementType achievementType;
   int goal;
 
   Mission({
@@ -42,7 +41,6 @@ class Mission {
     required this.questId,
     required this.startAt,
     required this.endAt,
-    required this.achievementType,
     required this.goal,
   });
 }

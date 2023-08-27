@@ -71,6 +71,7 @@ class QuestEditViewState extends State<QuestEditView> {
     if (tagNameList.length > 3) return "태그는 최대 3개까지 지정 가능합니다";
     if (tagNameList.length != tagNameList.toSet().length) return "중복된 태그가 있습니다";
     if (isFinite && endAt == null) return "종료 날짜를 선택해 주세요";
+    if (repeatCycle == RepeatCycle.none && endAt == null) return "반복하지 않는 경우 종료 날짜를 선택해야 합니다.";
     return null;
   }
 
@@ -401,7 +402,8 @@ class QuestEditViewState extends State<QuestEditView> {
           ),
           CardTable(data: {
             '목표': Text(getGoalMessage(quest.achievementType, quest.goal)),
-            '미션': Text(missionList.toString()),
+            '미션': Text(
+                missionList.map((mission) => DateTime.fromMillisecondsSinceEpoch(mission.startAt).toUtc()).toString()),
           }),
         ];
       }

@@ -1,6 +1,5 @@
-import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 
 String getDateformatString(int timestamp) {
-  return DateFormat('yyyy년 MM월 dd일')
-      .format(DateTime.fromMillisecondsSinceEpoch(timestamp).toLocal());
+  return Jiffy.parseFromMillisecondsSinceEpoch(timestamp).format(pattern: 'yyyy년 MM월 dd일');
 }
