@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quelendar/quest.dart';
 import 'package:quelendar/quest_provider.dart';
 import 'package:quelendar/util/card_table.dart';
+import 'package:quelendar/util/get_format_string.dart';
 
 class MissionEditView extends StatefulWidget {
   final String missionId;
@@ -13,18 +16,16 @@ class MissionEditView extends StatefulWidget {
 }
 
 class MissionEditViewState extends State<MissionEditView> {
-  late int startAt;
-  late int? endAt;
-  late int goal;
+  String? comment;
 
   bool isEditMode = false;
 
   void setEditState() {
     final mission = context.read<QuestProvider>().missionMap[widget.missionId];
 
-    startAt = mission?.startAt ?? DateTime.now().millisecondsSinceEpoch;
-    endAt = mission?.endAt;
-    goal = mission?.goal ?? 0;
+    if (mission == null) return;
+
+    comment = mission.comment;
   }
 
   @override
@@ -33,7 +34,8 @@ class MissionEditViewState extends State<MissionEditView> {
     setEditState();
   }
 
-  String? validateQuest() {
+  String? validateMission() {
+    if (comment != null && comment!.length > 16) return "메모는 16글자를 넘을 수 없습니다";
     return null;
   }
 
@@ -47,28 +49,88 @@ class MissionEditViewState extends State<MissionEditView> {
       if (isEditMode) {
         return [
           CardTable(data: {
-            '이름': TextFormField(
+            '메모': TextFormField(
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               onChanged: (text) {
-                setState(() {});
+                setState(() {
+                  comment = text;
+                });
               },
-              initialValue: mission.id,
+              initialValue: comment ?? "",
               decoration: const InputDecoration(
-                hintText: "퀘스트의 이름을 입력하세요",
+                hintText: "메모를 입력하세요",
               ),
               keyboardType: TextInputType.text,
             ),
           }),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.tertiary,
+                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onTertiary)),
+              onPressed: () {
+                final validation = validateMission();
+
+                if (validation != null) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Text(validation),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('확인'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  return;
+                }
+
+                try {
+                  final newMission = Mission(
+                    id: mission.id,
+                    questId: mission.questId,
+                    startAt: mission.startAt,
+                    endAt: mission.endAt,
+                    goal: mission.goal,
+                    comment: comment,
+                  );
+
+                  questProvider.addMission(newMission);
+                  setState(() {
+                    isEditMode = false;
+                  });
+                } catch (e) {
+                  log("failed to update mission", error: e);
+                }
+              },
+              child: const Text('저장', style: TextStyle(color: Colors.white)),
+            ),
+          ),
         ];
       } else {
         return [
           CardTable(
             data: {
-              '아이디': Text(
-                mission.id,
-              ),
+              '시작': Text(getDateformatString(mission.startAt)),
+              '종료': Text(getDateformatString(mission.endAt)),
+              '목표': Text(mission.goal.toString()),
             },
           ),
+          if (mission.comment != null)
+            CardTable(
+              data: {
+                '메모': Text(
+                  mission.comment ?? "",
+                ),
+              },
+            ),
         ];
       }
     })();
