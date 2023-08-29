@@ -452,6 +452,16 @@ class QuestEditViewState extends State<QuestEditView> {
                 setEditState();
                 isEditMode = true;
               }),
+            ),
+          if (isEditMode && quest != null)
+            IconButton(
+              icon: const Icon(
+                Icons.close,
+              ),
+              color: Theme.of(context).colorScheme.primary,
+              onPressed: () => setState(() {
+                isEditMode = false;
+              }),
             )
         ],
       ),

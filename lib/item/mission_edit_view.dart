@@ -152,7 +152,7 @@ class MissionEditViewState extends State<MissionEditView> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          if (!isEditMode && mission != null)
+          if (!isEditMode)
             IconButton(
               icon: const Icon(
                 Icons.edit,
@@ -161,6 +161,16 @@ class MissionEditViewState extends State<MissionEditView> {
               onPressed: () => setState(() {
                 setEditState();
                 isEditMode = true;
+              }),
+            ),
+          if (isEditMode)
+            IconButton(
+              icon: const Icon(
+                Icons.close,
+              ),
+              color: Theme.of(context).colorScheme.primary,
+              onPressed: () => setState(() {
+                isEditMode = false;
               }),
             )
         ],
