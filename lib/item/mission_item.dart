@@ -6,7 +6,8 @@ import 'package:quelendar/util/get_format_string.dart';
 
 class MissionItem extends StatelessWidget {
   final String missionId;
-  const MissionItem({required this.missionId, super.key});
+  final bool insideQuest;
+  const MissionItem({required this.missionId, this.insideQuest = false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +15,9 @@ class MissionItem extends StatelessWidget {
 
     final mission = questProvider.missionMap[missionId];
     if (mission == null) return Container();
+
+    final quest = questProvider.questMap[mission.questId];
+    if (quest == null) return Container();
 
     final missionMap = questProvider.missionMap;
     final missionList = missionMap.values.where((m) => m.questId == mission.questId).toList();
@@ -28,23 +32,30 @@ class MissionItem extends StatelessWidget {
     final comment = mission.comment;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2.0),
+      margin: EdgeInsets.symmetric(vertical: insideQuest ? 2.0 : 4.0),
       child: Card(
-        color: Theme.of(context).colorScheme.background,
+        color: insideQuest ? Theme.of(context).colorScheme.tertiaryContainer : Theme.of(context).cardTheme.color,
         child: ListTile(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          title: RichText(
-            text: TextSpan(
-              text: getDateRangeformatString(mission.startAt, mission.endAt),
-              style: TextStyle(fontSize: 14, color: Theme.of(context).textTheme.bodyLarge?.color),
-              children: <TextSpan>[
-                TextSpan(text: ' ($index)', style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)),
-              ],
-            ),
-          ),
+          title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (!insideQuest)
+              Text(
+                quest.name,
+                textScaleFactor: 0.7,
+              ),
+            RichText(
+              text: TextSpan(
+                text: getDateRangeformatString(mission.startAt, mission.endAt),
+                style: TextStyle(fontSize: 14, color: Theme.of(context).textTheme.bodyLarge?.color),
+                children: <TextSpan>[
+                  TextSpan(text: ' ($index)', style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)),
+                ],
+              ),
+            )
+          ]),
           subtitle: (comment != null)
               ? Padding(
                   padding: const EdgeInsets.only(top: 8.0),

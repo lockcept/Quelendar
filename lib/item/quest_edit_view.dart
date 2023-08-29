@@ -415,6 +415,7 @@ class QuestEditViewState extends State<QuestEditView> {
                   itemBuilder: (context, index) {
                     return MissionItem(
                       missionId: missionList[index].id,
+                      insideQuest: true,
                     );
                   },
                 ),

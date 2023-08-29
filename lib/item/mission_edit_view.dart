@@ -43,9 +43,16 @@ class MissionEditViewState extends State<MissionEditView> {
   Widget build(BuildContext context) {
     final questProvider = context.watch<QuestProvider>();
     final Mission? mission = questProvider.missionMap[widget.missionId];
+    if (mission == null) return Container();
+
+    final quest = questProvider.questMap[mission.questId];
+    if (quest == null) return Container();
+
+    final taskMap = questProvider.taskMap;
+    final taskList = taskMap.values.where((task) => task.missionId == widget.missionId).toList();
+    final totalGoal = taskList.map((task) => task.value).fold(0, (a, b) => a + b);
 
     final List<Widget> listViewChildren = (() {
-      if (mission == null) return [Container()];
       if (isEditMode) {
         return [
           CardTable(data: {
@@ -118,9 +125,22 @@ class MissionEditViewState extends State<MissionEditView> {
         return [
           CardTable(
             data: {
+              '퀘스트': Text(
+                quest.name,
+                textScaleFactor: 1.3,
+              ),
+            },
+          ),
+          CardTable(
+            data: {
               '시작': Text(getDateformatString(mission.startAt)),
               '종료': Text(getDateformatString(mission.endAt)),
+            },
+          ),
+          CardTable(
+            data: {
               '목표': Text(mission.goal.toString()),
+              '달성도': Text(totalGoal.toString()),
             },
           ),
           if (mission.comment != null)
