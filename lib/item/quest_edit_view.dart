@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:quelendar/item/mission_item.dart';
 import 'package:quelendar/item/quest_item.dart';
 import 'package:quelendar/quest.dart';
 import 'package:quelendar/quest_provider.dart';
@@ -400,11 +401,25 @@ class QuestEditViewState extends State<QuestEditView> {
               '반복': Text(getRepeatMessage(quest.repeatCycle, quest.repeatData) ?? ""),
             },
           ),
-          CardTable(data: {
-            '목표': Text(getGoalMessage(quest.achievementType, quest.goal)),
-            '미션': Text(
-                missionList.map((mission) => DateTime.fromMillisecondsSinceEpoch(mission.startAt).toUtc()).toString()),
-          }),
+          CardTable(
+            data: {
+              '목표': Text(getGoalMessage(quest.achievementType, quest.goal)),
+              '미션': Container(
+                constraints: const BoxConstraints(
+                  maxHeight: 400,
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: missionList.length,
+                  itemBuilder: (context, index) {
+                    return MissionItem(
+                      missionId: missionList[index].id,
+                    );
+                  },
+                ),
+              )
+            },
+          ),
         ];
       }
     })();
@@ -416,6 +431,7 @@ class QuestEditViewState extends State<QuestEditView> {
           fontSize: 24,
           color: Theme.of(context).colorScheme.onBackground,
         ),
+        title: const Text("퀘스트"),
         elevation: 0.0,
         leading: IconButton(
           icon: const Icon(
