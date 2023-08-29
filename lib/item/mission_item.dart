@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quelendar/item/mission_edit_view.dart';
 import 'package:quelendar/quest_provider.dart';
+import 'package:quelendar/util/get_format_string.dart';
 
 class MissionItem extends StatelessWidget {
   final String missionId;
@@ -14,27 +15,44 @@ class MissionItem extends StatelessWidget {
     final mission = questProvider.missionMap[missionId];
     if (mission == null) return Container();
 
+    final missionMap = questProvider.missionMap;
+    final missionList = missionMap.values.where((m) => m.questId == mission.questId).toList();
+    missionList.sort((p, q) => p.startAt.compareTo(q.startAt));
+    final index = missionList.indexOf(mission) + 1;
+
+    final taskMap = questProvider.taskMap;
+    final taskList = taskMap.values.where((task) => task.missionId == missionId).toList();
+
+    final totalGoal = taskList.map((task) => task.value).fold(0, (a, b) => a + b);
+
+    final comment = mission.comment;
+
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
+      margin: const EdgeInsets.symmetric(vertical: 2.0),
       child: Card(
         color: Theme.of(context).colorScheme.background,
         child: ListTile(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-          title: const Text(
-            "날짜",
-            style: TextStyle(
-              fontSize: 16,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          title: RichText(
+            text: TextSpan(
+              text: getDateRangeformatString(mission.startAt, mission.endAt),
+              style: TextStyle(fontSize: 14, color: Theme.of(context).textTheme.bodyLarge?.color),
+              children: <TextSpan>[
+                TextSpan(text: ' ($index)', style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)),
+              ],
             ),
           ),
-          subtitle: const Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: Text("몇 번째"),
-          ),
+          subtitle: (comment != null)
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(comment),
+                )
+              : null,
           trailing: Text(
-            "달성도",
+            "$totalGoal/${mission.goal}",
             style: TextStyle(
               fontSize: 16,
               color: Theme.of(context).textTheme.bodyMedium?.color,

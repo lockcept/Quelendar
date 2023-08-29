@@ -382,6 +382,7 @@ class QuestEditViewState extends State<QuestEditView> {
 
         final missionMap = questProvider.missionMap;
         final missionList = missionMap.values.where((mission) => mission.questId == quest.id).toList();
+        missionList.sort((p, q) => -p.startAt.compareTo(q.startAt));
 
         return [
           CardTable(

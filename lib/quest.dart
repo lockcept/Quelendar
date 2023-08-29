@@ -35,6 +35,7 @@ class Mission {
   int startAt;
   int endAt;
   int goal;
+  String? comment;
 
   Mission({
     required this.id,
@@ -42,6 +43,7 @@ class Mission {
     required this.startAt,
     required this.endAt,
     required this.goal,
+    this.comment,
   });
 }
 

@@ -53,7 +53,7 @@ class QuestProvider with ChangeNotifier {
               questId: quest.id,
               startAt: nextMissionStartAt,
               endAt: nextMissionStartAt + duration,
-              goal: 0);
+              goal: quest.goal);
 
           addMission(newMission);
           lastMissionStartAt = nextMissionStartAt;
@@ -67,7 +67,8 @@ class QuestProvider with ChangeNotifier {
               .startOf(Unit.day)
               .millisecondsSinceEpoch; // none이면 항상 endAt이 있음
           if (missionList.isEmpty) {
-            final newMission = Mission(id: randomId(), questId: quest.id, startAt: startAt, endAt: endAt, goal: 0);
+            final newMission =
+                Mission(id: randomId(), questId: quest.id, startAt: startAt, endAt: endAt, goal: quest.goal);
             addMission(newMission);
           }
           break;
