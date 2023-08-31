@@ -74,8 +74,8 @@ class MissionEditViewState extends State<MissionEditView> {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.tertiary,
-                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onTertiary)),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
               onPressed: () {
                 final validation = validateMission();
 
@@ -141,6 +141,7 @@ class MissionEditViewState extends State<MissionEditView> {
             data: {
               '목표': Text(mission.goal.toString()),
               '달성도': Text(totalGoal.toString()),
+              '미션 수행': Text(totalGoal.toString()),
             },
           ),
           if (mission.comment != null)

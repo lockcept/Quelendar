@@ -144,7 +144,7 @@ class QuestEditViewState extends State<QuestEditView> {
             '시작': ElevatedButton(
               style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.secondary,
-                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondaryContainer)),
+                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
               onPressed: () async {
                 final startDate = DateTime.fromMillisecondsSinceEpoch(startAt);
 
@@ -194,7 +194,7 @@ class QuestEditViewState extends State<QuestEditView> {
               "종료": ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.secondary,
-                    textStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondaryContainer)),
+                    textStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
                 onPressed: () async {
                   final DateTime? pickedDate = await showDatePicker(
                     context: context,
@@ -318,8 +318,8 @@ class QuestEditViewState extends State<QuestEditView> {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.tertiary,
-                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onTertiary)),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
               onPressed: () {
                 final validation = validateQuest();
 
