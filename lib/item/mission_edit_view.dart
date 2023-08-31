@@ -74,8 +74,8 @@ class MissionEditViewState extends State<MissionEditView> {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
               onPressed: () {
                 final validation = validateMission();
 
@@ -117,7 +117,7 @@ class MissionEditViewState extends State<MissionEditView> {
                   log("failed to update mission", error: e);
                 }
               },
-              child: const Text('저장', style: TextStyle(color: Colors.white)),
+              child: Text('저장', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
             ),
           ),
         ];
