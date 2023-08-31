@@ -40,6 +40,7 @@ class QuestProvider with ChangeNotifier {
       final repeatCycle = quest.repeatCycle;
 
       int? lastMissionStartAt;
+      if (missionList.isNotEmpty) lastMissionStartAt = missionList.last.startAt;
       final now = DateTime.now().millisecondsSinceEpoch;
       final maxStartAt = min(now, quest.endAt ?? now);
 
@@ -141,6 +142,7 @@ class QuestProvider with ChangeNotifier {
 
   void addQuest(Quest quest) {
     questMap[quest.id] = quest;
+    validateMission();
     notifyListeners();
   }
 
