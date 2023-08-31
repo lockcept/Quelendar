@@ -74,8 +74,8 @@ class MissionEditViewState extends State<MissionEditView> {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
               onPressed: () {
                 final validation = validateMission();
 

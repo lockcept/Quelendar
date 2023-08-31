@@ -64,9 +64,9 @@ class NumberScrollRowState extends State<NumberScrollRow> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: !isEditMode
-                    ? Theme.of(context).colorScheme.secondary
-                    : calculateFocusColor(Theme.of(context).colorScheme.secondary),
-                textStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+                    ? Theme.of(context).colorScheme.primary
+                    : calculateFocusColor(Theme.of(context).colorScheme.primary),
+                textStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
               ),
               onPressed: () {
                 setState(() {
