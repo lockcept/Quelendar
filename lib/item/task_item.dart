@@ -29,10 +29,7 @@ class TaskItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          title: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(task.name),
-          ),
+          title: Text(task.name),
           trailing: Text(
             "${task.value}",
             style: TextStyle(

@@ -150,7 +150,7 @@ class QuestEditViewState extends State<QuestEditView> {
               onPressed: () async {
                 final startDate = DateTime.fromMillisecondsSinceEpoch(startAt);
 
-                final maxDate = DateTime(2033).subtract(const Duration(days: 1));
+                final maxDate = DateTime(2123).subtract(const Duration(days: 1));
 
                 final endDate = endAt != null ? DateTime.fromMillisecondsSinceEpoch(endAt!) : maxDate;
 
@@ -202,7 +202,7 @@ class QuestEditViewState extends State<QuestEditView> {
                     context: context,
                     initialDate: endAt != null ? DateTime.fromMillisecondsSinceEpoch(endAt!) : DateTime.now(),
                     firstDate: DateTime.fromMillisecondsSinceEpoch(startAt),
-                    lastDate: DateTime(2033).subtract(const Duration(days: 1)),
+                    lastDate: DateTime(2123).subtract(const Duration(days: 1)),
                   );
 
                   if (pickedDate != null) {

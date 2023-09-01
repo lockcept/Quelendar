@@ -28,8 +28,8 @@ class TaskEditView extends StatefulWidget {
 class TaskEditViewState extends State<TaskEditView> {
   late String taskId;
   late String missionId;
-  late int startAt;
-  late int? endAt;
+  late List<int> startAtList;
+  late List<int>? endAtList;
   late int value;
   late String name;
 
@@ -38,18 +38,19 @@ class TaskEditViewState extends State<TaskEditView> {
   late bool isGenerateMode;
 
   void setValueAuto() {
-    if (endAt == null) return;
+    if (endAtList == null) return;
 
-    final mission = context.read<QuestProvider>().missionMap[widget.missionId];
+    final startAt = Jiffy.parseFromList(startAtList).millisecondsSinceEpoch;
+    final endAt = Jiffy.parseFromList(endAtList!).millisecondsSinceEpoch;
+
+    final mission = context.read<QuestProvider>().missionMap[missionId];
     if (mission == null) return;
 
     final quest = context.read<QuestProvider>().questMap[mission.questId];
     if (quest == null) return;
 
     if (quest.achievementType == AchievementType.minute) {
-      value = Jiffy.parseFromMillisecondsSinceEpoch(endAt!)
-          .diff(Jiffy.parseFromMillisecondsSinceEpoch(startAt), unit: Unit.minute, asFloat: false)
-          .toInt();
+      value = (endAt - startAt) ~/ (60 * 1000);
     }
   }
 
@@ -59,8 +60,8 @@ class TaskEditViewState extends State<TaskEditView> {
       isEditMode = true;
       taskId = widget.taskId;
       missionId = widget.missionId ?? "";
-      startAt = Jiffy.now().millisecondsSinceEpoch;
-      endAt = null;
+      startAtList = getListFromTimestamp(Jiffy.now().millisecondsSinceEpoch);
+      endAtList = null;
       value = 0;
       name = "";
 
@@ -80,20 +81,20 @@ class TaskEditViewState extends State<TaskEditView> {
 
       taskId = widget.taskId;
       missionId = task.missionId;
-      startAt = task.startAt;
-      endAt = task.endAt;
+      startAtList = getListFromTimestamp(task.startAt);
       value = task.value;
       name = task.name;
       isFinished = true;
 
-      if (endAt == null) {
+      if (task.endAt != null) {
+        endAtList = getListFromTimestamp(task.endAt!);
+      } else {
         // 진행 중
-        endAt = Jiffy.now().millisecondsSinceEpoch;
+        endAtList = getListFromTimestamp(Jiffy.now().millisecondsSinceEpoch);
         isEditMode = true;
 
         setValueAuto();
       }
-
       return;
     }
   }
@@ -107,6 +108,7 @@ class TaskEditViewState extends State<TaskEditView> {
 
   String? validateTask() {
     if (name.length > 24) return "이름은 24글자를 넘을 수 없습니다";
+    if (value < 0) return "달성도는 0보다 작을 수 없습니다";
     return null;
   }
 
@@ -139,7 +141,40 @@ class TaskEditViewState extends State<TaskEditView> {
             ),
           }),
           CardTable(data: {
-            '달성도': TextFormField(
+            '시작': ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  textStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+              onPressed: () async {
+                final initialDate = Jiffy.parseFromList(startAtList).dateTime;
+
+                final startDate = DateTime(2023);
+
+                final endDate = DateTime(2123).subtract(const Duration(days: 1));
+
+                final DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: initialDate,
+                  firstDate: startDate,
+                  lastDate: endDate,
+                );
+
+                if (pickedDate != null) {
+                  setState(() {
+                    final list = getListFromTimestamp(pickedDate.millisecondsSinceEpoch);
+                    startAtList[0] = list[0];
+                    startAtList[1] = list[1];
+                    startAtList[2] = list[2];
+                    setValueAuto();
+                  });
+                }
+              },
+              child: Text(getDateformatString(Jiffy.parseFromList(startAtList).millisecondsSinceEpoch)),
+            ),
+          }),
+          CardTable(data: {
+            '달성도 (${quest.achievementType.label})': TextFormField(
+              key: GlobalKey(debugLabel: value.toString()),
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               onChanged: (input) {
                 final number = int.tryParse(input) ?? 0;
@@ -188,8 +223,8 @@ class TaskEditViewState extends State<TaskEditView> {
                   final newTask = Task(
                     id: widget.taskId,
                     missionId: missionId,
-                    startAt: startAt,
-                    endAt: endAt,
+                    startAt: Jiffy.parseFromList(startAtList).millisecondsSinceEpoch,
+                    endAt: endAtList != null ? Jiffy.parseFromList(endAtList!).millisecondsSinceEpoch : null,
                     value: value,
                     name: name,
                   );
@@ -220,8 +255,8 @@ class TaskEditViewState extends State<TaskEditView> {
           ),
           CardTable(
             data: {
-              '시작': Text(getDateformatString(task.startAt)),
-              '종료': Text(task.endAt != null ? getDateformatString(task.endAt!) : "진행 중"),
+              '시작': Text(getDateformatString(task.startAt, detail: true)),
+              '종료': Text(task.endAt != null ? getDateformatString(task.endAt!, detail: true) : "진행 중"),
             },
           ),
           CardTable(
