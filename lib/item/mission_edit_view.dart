@@ -166,7 +166,7 @@ class MissionEditViewState extends State<MissionEditView> {
                                 MaterialPageRoute(builder: (context) => TaskEditView(taskId: unfinishedTaskList[0].id)),
                               );
                             },
-                            child: const Text("완료하기"));
+                            child: const Text("완료하기 (진행 중)"));
                       } else {
                         return ElevatedButton(
                             onPressed: () {
