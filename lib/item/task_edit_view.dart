@@ -8,6 +8,7 @@ import 'package:quelendar/quest.dart';
 import 'package:quelendar/quest_provider.dart';
 import 'package:quelendar/util/card_table.dart';
 import 'package:quelendar/util/get_format_string.dart';
+import 'package:quelendar/util/number_scroll_row.dart';
 import 'package:quelendar/util/random_id.dart';
 
 class TaskEditView extends StatefulWidget {
@@ -38,10 +39,10 @@ class TaskEditViewState extends State<TaskEditView> {
   late bool isGenerateMode;
 
   void setValueAuto() {
-    if (endAtList == null) return;
-
-    final startAt = Jiffy.parseFromList(startAtList).millisecondsSinceEpoch;
-    final endAt = Jiffy.parseFromList(endAtList!).millisecondsSinceEpoch;
+    if (endAtList == null) {
+      value = 0;
+      return;
+    }
 
     final mission = context.read<QuestProvider>().missionMap[missionId];
     if (mission == null) return;
@@ -50,6 +51,8 @@ class TaskEditViewState extends State<TaskEditView> {
     if (quest == null) return;
 
     if (quest.achievementType == AchievementType.minute) {
+      final startAt = Jiffy.parseFromList(startAtList).millisecondsSinceEpoch;
+      final endAt = Jiffy.parseFromList(endAtList!).millisecondsSinceEpoch;
       value = (endAt - startAt) ~/ (60 * 1000);
     }
   }
@@ -108,6 +111,8 @@ class TaskEditViewState extends State<TaskEditView> {
 
   String? validateTask() {
     if (name.length > 24) return "이름은 24글자를 넘을 수 없습니다";
+    if (Jiffy.parseFromList(startAtList).millisecondsSinceEpoch >
+        Jiffy.parseFromList(endAtList ?? startAtList).millisecondsSinceEpoch) return "완료 시각이 시작 시각보다 이를 수 없습니다";
     if (value < 0) return "달성도는 0보다 작을 수 없습니다";
     return null;
   }
@@ -124,6 +129,7 @@ class TaskEditViewState extends State<TaskEditView> {
 
     final List<Widget> listViewChildren = (() {
       if (isEditMode) {
+        final isValueEnable = quest.achievementType != AchievementType.minute && isFinished;
         return [
           CardTable(data: {
             '이름': TextFormField(
@@ -141,7 +147,7 @@ class TaskEditViewState extends State<TaskEditView> {
             ),
           }),
           CardTable(data: {
-            '시작': ElevatedButton(
+            '시작 날짜': ElevatedButton(
               style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   textStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
@@ -171,10 +177,125 @@ class TaskEditViewState extends State<TaskEditView> {
               },
               child: Text(getDateformatString(Jiffy.parseFromList(startAtList).millisecondsSinceEpoch)),
             ),
+            '시작 시각': Row(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: NumberScrollRow(
+                    defaultValue: startAtList[3],
+                    onChanged: (value) => setState(() {
+                      startAtList[3] = value;
+                      setValueAuto();
+                    }),
+                    trailingText: '시',
+                    maxValue: 23,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 5,
+                  child: NumberScrollRow(
+                    defaultValue: startAtList[4],
+                    onChanged: (value) => setState(() {
+                      startAtList[4] = value;
+                      setValueAuto();
+                    }),
+                    trailingText: '분',
+                    maxValue: 59,
+                  ),
+                )
+              ],
+            )
+          }),
+          CardTable(data: {
+            '완료하기': DropdownButton<String>(
+              value: isFinished ? "완료" : "진행 중",
+              onChanged: (value) {
+                setState(() {
+                  if (value == "완료") {
+                    isFinished = true;
+                    endAtList ??= getListFromTimestamp(Jiffy.now().millisecondsSinceEpoch);
+                  } else {
+                    isFinished = false;
+                    endAtList = null;
+                  }
+                  setValueAuto();
+                });
+              },
+              items: <String>['완료', '진행 중']
+                  .map<DropdownMenuItem<String>>(
+                    (String value) => DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    ),
+                  )
+                  .toList(),
+            ),
+            if (isFinished && endAtList != null)
+              '완료 날짜': ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    textStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+                onPressed: () async {
+                  final initialDate = Jiffy.parseFromList(endAtList ?? startAtList).dateTime;
+
+                  final startDate = DateTime(2023);
+
+                  final endDate = DateTime(2123).subtract(const Duration(days: 1));
+
+                  final DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: initialDate,
+                    firstDate: startDate,
+                    lastDate: endDate,
+                  );
+
+                  if (pickedDate != null) {
+                    setState(() {
+                      final list = getListFromTimestamp(pickedDate.millisecondsSinceEpoch);
+                      endAtList?[0] = list[0];
+                      endAtList?[1] = list[1];
+                      endAtList?[2] = list[2];
+                      setValueAuto();
+                    });
+                  }
+                },
+                child: Text(getDateformatString(Jiffy.parseFromList(endAtList!).millisecondsSinceEpoch)),
+              ),
+            if (isFinished && endAtList != null)
+              '완료 시각': Row(
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: NumberScrollRow(
+                      defaultValue: endAtList![3],
+                      onChanged: (value) => setState(() {
+                        endAtList![3] = value;
+                        setValueAuto();
+                      }),
+                      trailingText: '시',
+                      maxValue: 23,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 5,
+                    child: NumberScrollRow(
+                      defaultValue: endAtList![4],
+                      onChanged: (value) => setState(() {
+                        endAtList![4] = value;
+                        setValueAuto();
+                      }),
+                      trailingText: '분',
+                      maxValue: 59,
+                    ),
+                  )
+                ],
+              )
           }),
           CardTable(data: {
             '달성도 (${quest.achievementType.label})': TextFormField(
-              key: GlobalKey(debugLabel: value.toString()),
+              key: isValueEnable ? null :  GlobalKey(debugLabel: value.toString()),
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               onChanged: (input) {
                 final number = int.tryParse(input) ?? 0;
@@ -187,7 +308,7 @@ class TaskEditViewState extends State<TaskEditView> {
               keyboardType: TextInputType.number,
               initialValue: value.toString(),
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              enabled: quest.achievementType != AchievementType.minute,
+              enabled: isValueEnable,
             ),
           }),
           Padding(
