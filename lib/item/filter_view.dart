@@ -11,6 +11,9 @@ class FilterView extends StatefulWidget {
 }
 
 class FilterViewState extends State<FilterView> {
+  late TextEditingController questNameController;
+  late TextEditingController tagNameController;
+
   String questNameFilter = "";
   String tagNameFilter = "";
 
@@ -20,6 +23,20 @@ class FilterViewState extends State<FilterView> {
     final preferenceProvider = context.read<PreferenceProvider>();
     questNameFilter = preferenceProvider.questNameFilter ?? "";
     tagNameFilter = preferenceProvider.tagNameFilter ?? "";
+
+    questNameController = TextEditingController(text: questNameFilter);
+    questNameController.addListener(() {
+      setState(() {
+        questNameFilter = questNameController.text;
+      });
+    });
+
+    tagNameController = TextEditingController(text: tagNameFilter);
+    tagNameController.addListener(() {
+      setState(() {
+        tagNameFilter = tagNameController.text;
+      });
+    });
   }
 
   @override
@@ -28,31 +45,55 @@ class FilterViewState extends State<FilterView> {
 
     final listViewChildren = [
       CardTable(data: {
-        '퀘스트': TextFormField(
-          onTapOutside: (event) => FocusScope.of(context).unfocus(),
-          onChanged: (text) {
-            setState(() {
-              questNameFilter = text;
-            });
-          },
-          initialValue: questNameFilter,
-          decoration: const InputDecoration(
-            hintText: "퀘스트 이름으로 검색하기",
-          ),
-          keyboardType: TextInputType.text,
+        '퀘스트': Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            TextFormField(
+              controller: questNameController,
+              onTapOutside: (event) => FocusScope.of(context).unfocus(),
+              decoration: const InputDecoration(
+                hintText: "퀘스트 이름으로 검색하기",
+              ),
+              keyboardType: TextInputType.text,
+            ),
+            if (questNameFilter.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    questNameController.clear();
+                  });
+                },
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: Icon(Icons.clear),
+                ),
+              ),
+          ],
         ),
-        '태그': TextFormField(
-          onTapOutside: (event) => FocusScope.of(context).unfocus(),
-          onChanged: (text) {
-            setState(() {
-              tagNameFilter = text;
-            });
-          },
-          initialValue: tagNameFilter,
-          decoration: const InputDecoration(
-            hintText: "태그 이름으로 검색하기",
-          ),
-          keyboardType: TextInputType.text,
+        '태그': Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            TextFormField(
+              controller: tagNameController,
+              onTapOutside: (event) => FocusScope.of(context).unfocus(),
+              decoration: const InputDecoration(
+                hintText: "태그 이름으로 검색하기",
+              ),
+              keyboardType: TextInputType.text,
+            ),
+            if (tagNameFilter.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    tagNameController.clear();
+                  });
+                },
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: Icon(Icons.clear),
+                ),
+              ),
+          ],
         ),
       }),
       Padding(
