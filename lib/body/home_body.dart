@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:provider/provider.dart';
+import 'package:quelendar/item/filter_view.dart';
 import 'package:quelendar/item/mission_item.dart';
+import 'package:quelendar/preference_provider.dart';
 import 'package:quelendar/quest_provider.dart';
+import 'package:quelendar/util/calculate_focus_color.dart';
 
 class HomeBody extends StatelessWidget {
   const HomeBody({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final preferenceProvider = context.watch<PreferenceProvider>();
+
     final nowTimestamp = Jiffy.now().millisecondsSinceEpoch;
 
     final missionList = context.watch<QuestProvider>().missionMap.values.toList();
@@ -22,6 +27,24 @@ class HomeBody extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.search,
+              ),
+              color: preferenceProvider.isFilterEnable
+                  ? calculateFocusColor(Theme.of(context).colorScheme.primary)
+                  : Theme.of(context).colorScheme.primary,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FilterView(),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         body: ListView(
           padding: const EdgeInsets.all(8),
