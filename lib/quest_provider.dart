@@ -151,6 +151,11 @@ class QuestProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void addTask(Task task) {
+    taskMap[task.id] = task;
+    notifyListeners();
+  }
+
   void addTag(Tag tag) {
     tagMap[tag.id] = tag;
   }

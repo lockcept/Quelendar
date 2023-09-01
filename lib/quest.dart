@@ -1,18 +1,18 @@
 class Task {
   String id;
   String missionId;
+  String name;
   int startAt;
   int? endAt;
   int value;
-  String? comment;
 
   Task({
     required this.id,
     required this.missionId,
+    required this.name,
     required this.startAt,
     this.endAt,
     required this.value,
-    this.comment,
   });
 }
 

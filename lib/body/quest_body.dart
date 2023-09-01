@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:quelendar/item/quest_edit_view.dart';
 import 'package:quelendar/item/quest_item.dart';
 import 'package:quelendar/quest_provider.dart';
-import 'package:quelendar/util/random_id.dart';
 
 class QuestBody extends StatelessWidget {
   const QuestBody({super.key});
@@ -28,9 +27,7 @@ class QuestBody extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => QuestEditView(
-                    questId: randomId(),
-                  ),
+                  builder: (context) => QuestEditView.generateQuest(),
                 ),
               );
             },

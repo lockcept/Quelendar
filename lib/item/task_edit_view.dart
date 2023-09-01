@@ -2,31 +2,45 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quelendar/item/task_item.dart';
 import 'package:quelendar/quest.dart';
 import 'package:quelendar/quest_provider.dart';
 import 'package:quelendar/util/card_table.dart';
-import 'package:quelendar/util/get_format_string.dart';
+import 'package:quelendar/util/random_id.dart';
 
-class MissionEditView extends StatefulWidget {
-  final String missionId;
-  const MissionEditView({required this.missionId, super.key});
+class TaskEditView extends StatefulWidget {
+  final String taskId;
+  final String? missionId;
+  const TaskEditView({required this.taskId, super.key}) : missionId = null;
+  TaskEditView.generateTask({required this.missionId, super.key}) : taskId = randomId();
 
   @override
-  MissionEditViewState createState() => MissionEditViewState();
+  TaskEditViewState createState() => TaskEditViewState();
 }
 
-class MissionEditViewState extends State<MissionEditView> {
-  String? comment;
+class TaskEditViewState extends State<TaskEditView> {
+  String name = "";
 
   bool isEditMode = false;
 
   void setEditState() {
-    final mission = context.read<QuestProvider>().missionMap[widget.missionId];
+    final task = context.read<QuestProvider>().taskMap[widget.taskId];
+    if (task != null) {
+      // 기존에 있는 태스크
+      name = task.name;
+      return;
+    } else {
+      // 태스크 생성
+      final missionId = widget.missionId;
+      if (missionId == null) return;
 
-    if (mission == null) return;
+      final mission = context.read<QuestProvider>().missionMap[widget.missionId];
+      if (mission == null) return;
 
-    comment = mission.comment;
+      final quest = context.read<QuestProvider>().questMap[mission.questId];
+      if (quest == null) return;
+
+      name = "${quest.name}의 태스크";
+    }
   }
 
   @override
@@ -35,39 +49,31 @@ class MissionEditViewState extends State<MissionEditView> {
     setEditState();
   }
 
-  String? validateMission() {
-    if (comment != null && comment!.length > 16) return "메모는 16글자를 넘을 수 없습니다";
+  String? validateTask() {
+    if (name.length > 16) return "메모는 16글자를 넘을 수 없습니다";
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
     final questProvider = context.watch<QuestProvider>();
-    final Mission? mission = questProvider.missionMap[widget.missionId];
-    if (mission == null) return Container();
-
-    final quest = questProvider.questMap[mission.questId];
-    if (quest == null) return Container();
-
-    final taskMap = questProvider.taskMap;
-    final taskList = taskMap.values.where((task) => task.missionId == widget.missionId).toList();
-    final totalGoal = taskList.map((task) => task.value).fold(0, (a, b) => a + b);
-    taskList.sort((p, q) => -p.startAt.compareTo(q.startAt));
+    final Task? task = questProvider.taskMap[widget.taskId];
+    if (task == null) return Container();
 
     final List<Widget> listViewChildren = (() {
       if (isEditMode) {
         return [
           CardTable(data: {
-            '메모': TextFormField(
+            '이름': TextFormField(
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               onChanged: (text) {
                 setState(() {
-                  comment = text;
+                  name = text;
                 });
               },
-              initialValue: comment ?? "",
+              initialValue: name,
               decoration: const InputDecoration(
-                hintText: "메모를 입력하세요",
+                hintText: "이름을 입력하세요",
               ),
               keyboardType: TextInputType.text,
             ),
@@ -79,7 +85,7 @@ class MissionEditViewState extends State<MissionEditView> {
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
               onPressed: () {
-                final validation = validateMission();
+                final validation = validateTask();
 
                 if (validation != null) {
                   showDialog(
@@ -102,21 +108,21 @@ class MissionEditViewState extends State<MissionEditView> {
                 }
 
                 try {
-                  final newMission = Mission(
-                    id: mission.id,
-                    questId: mission.questId,
-                    startAt: mission.startAt,
-                    endAt: mission.endAt,
-                    goal: mission.goal,
-                    comment: comment,
+                  final newTask = Task(
+                    id: task.id,
+                    missionId: task.missionId,
+                    startAt: task.startAt,
+                    endAt: task.endAt,
+                    value: task.value,
+                    name: name,
                   );
 
-                  questProvider.addMission(newMission);
+                  questProvider.addTask(newTask);
                   setState(() {
                     isEditMode = false;
                   });
                 } catch (e) {
-                  log("failed to update mission", error: e);
+                  log("failed to update task", error: e);
                 }
               },
               child: Text('저장', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
@@ -127,46 +133,19 @@ class MissionEditViewState extends State<MissionEditView> {
         return [
           CardTable(
             data: {
-              '퀘스트': Text(
-                quest.name,
+              '아이디': Text(
+                task.id,
                 textScaleFactor: 1.3,
               ),
             },
           ),
           CardTable(
             data: {
-              '시작': Text(getDateformatString(mission.startAt)),
-              '종료': Text(getDateformatString(mission.endAt)),
+              '메모': Text(
+                task.name,
+              ),
             },
           ),
-          CardTable(
-            data: {
-              '목표': Text(mission.goal.toString()),
-              '달성도': Text(totalGoal.toString()),
-              '태스크': Container(
-                constraints: const BoxConstraints(
-                  maxHeight: 400,
-                ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: taskList.length,
-                  itemBuilder: (context, index) {
-                    return TaskItem(
-                      taskId: taskList[index].id,
-                    );
-                  },
-                ),
-              )
-            },
-          ),
-          if (mission.comment != null)
-            CardTable(
-              data: {
-                '메모': Text(
-                  mission.comment ?? "",
-                ),
-              },
-            ),
         ];
       }
     })();
@@ -178,7 +157,7 @@ class MissionEditViewState extends State<MissionEditView> {
           fontSize: 24,
           color: Theme.of(context).colorScheme.onBackground,
         ),
-        title: const Text("미션"),
+        title: const Text("태스크"),
         elevation: 0.0,
         leading: IconButton(
           icon: const Icon(

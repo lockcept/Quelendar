@@ -11,10 +11,12 @@ import 'package:quelendar/util/card_table.dart';
 import 'package:quelendar/util/days_selector.dart';
 import 'package:quelendar/util/get_format_string.dart';
 import 'package:quelendar/util/number_scroll_row.dart';
+import 'package:quelendar/util/random_id.dart';
 
 class QuestEditView extends StatefulWidget {
   final String questId;
   const QuestEditView({required this.questId, super.key});
+  QuestEditView.generateQuest({super.key}) : questId = randomId();
 
   @override
   QuestEditViewState createState() => QuestEditViewState();
