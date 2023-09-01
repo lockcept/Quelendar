@@ -13,9 +13,24 @@ class QuestBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final questMap = context.watch<QuestProvider>().questMap;
+    final tagMap = context.watch<QuestProvider>().tagMap;
     final preferenceProvider = context.watch<PreferenceProvider>();
 
-    final itemCount = questMap.length;
+    final questNameFilter = preferenceProvider.questNameFilter;
+    final tagNameFilter = preferenceProvider.tagNameFilter;
+
+    final filteredQuestList = questMap.values.where((quest) {
+      if (questNameFilter != null) {
+        if (!quest.name.contains(questNameFilter)) return false;
+      }
+      if (tagNameFilter != null) {
+        final tagNameList = quest.tagIdList.map((tagId) => tagMap[tagId]?.name ?? "").toList();
+        if (!tagNameList.contains(tagNameFilter)) return false;
+      }
+      return true;
+    }).toList();
+
+    final itemCount = filteredQuestList.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,7 +74,7 @@ class QuestBody extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               itemCount: itemCount,
               itemBuilder: (BuildContext context, int index) {
-                return QuestItem(questId: questMap.values.toList()[index].id);
+                return QuestItem(questId: filteredQuestList[index].id);
               },
             )
           : const Center(child: Text('퀘스트를 생성해보세요.')),

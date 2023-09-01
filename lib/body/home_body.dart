@@ -19,9 +19,31 @@ class HomeBody extends StatelessWidget {
     final missionList = context.watch<QuestProvider>().missionMap.values.toList();
     missionList.sort((a, b) => -a.endAt.compareTo(b.endAt));
 
-    final currMissionList =
-        missionList.where((mission) => mission.startAt <= nowTimestamp && nowTimestamp < mission.endAt).toList();
-    final prevMissionList = missionList.where((mission) => mission.endAt <= nowTimestamp).toList().sublist(0, 10);
+    final questMap = context.watch<QuestProvider>().questMap;
+    final tagMap = context.watch<QuestProvider>().tagMap;
+    final questNameFilter = preferenceProvider.questNameFilter;
+    final tagNameFilter = preferenceProvider.tagNameFilter;
+
+    final filteredMissionList = missionList.where((mission) {
+      final quest = questMap[mission.questId];
+      if (quest == null) return false;
+
+      if (questNameFilter != null) {
+        if (!quest.name.contains(questNameFilter)) return false;
+      }
+      if (tagNameFilter != null) {
+        final tagNameList = quest.tagIdList.map((tagId) => tagMap[tagId]?.name ?? "").toList();
+        if (!tagNameList.contains(tagNameFilter)) return false;
+      }
+      return true;
+    }).toList();
+
+    final currMissionList = filteredMissionList
+        .where((mission) => mission.startAt <= nowTimestamp && nowTimestamp < mission.endAt)
+        .toList();
+    final prevMissionList = filteredMissionList
+        .where((mission) => nowTimestamp - 7 * 24 * 60 * 60 * 1000 < mission.endAt && mission.endAt <= nowTimestamp)
+        .toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -76,7 +98,7 @@ class HomeBody extends StatelessWidget {
             ),
             const Center(
               child: Text(
-                '완료',
+                '최근에 완료',
                 textScaleFactor: 1.6,
               ),
             ),
