@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:quelendar/quest.dart';
 import 'package:quelendar/quest_provider.dart';
 import 'package:quelendar/util/card_table.dart';
+import 'package:quelendar/util/clock_scroll_row.dart';
 import 'package:quelendar/util/get_format_string.dart';
-import 'package:quelendar/util/number_scroll_row.dart';
 import 'package:quelendar/util/random_id.dart';
 
 class TaskEditView extends StatefulWidget {
@@ -177,34 +177,17 @@ class TaskEditViewState extends State<TaskEditView> {
               },
               child: Text(getDateformatString(Jiffy.parseFromList(startAtList).millisecondsSinceEpoch)),
             ),
-            '시작 시각': Row(
-              children: [
-                Expanded(
-                  flex: 5,
-                  child: NumberScrollRow(
-                    defaultValue: startAtList[3],
-                    onChanged: (value) => setState(() {
-                      startAtList[3] = value;
-                      setValueAuto();
-                    }),
-                    trailingText: '시',
-                    maxValue: 23,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 5,
-                  child: NumberScrollRow(
-                    defaultValue: startAtList[4],
-                    onChanged: (value) => setState(() {
-                      startAtList[4] = value;
-                      setValueAuto();
-                    }),
-                    trailingText: '분',
-                    maxValue: 59,
-                  ),
-                )
-              ],
+            '시작 시각': ClockScrollRow(
+              defaultHour: startAtList[3],
+              onHourChanged: (value) => setState(() {
+                startAtList[3] = value;
+                setValueAuto();
+              }),
+              defaultMinute: startAtList[4],
+              onMinuteChanged: (value) => setState(() {
+                startAtList[4] = value;
+                setValueAuto();
+              }),
             )
           }),
           CardTable(data: {
@@ -263,39 +246,22 @@ class TaskEditViewState extends State<TaskEditView> {
                 child: Text(getDateformatString(Jiffy.parseFromList(endAtList!).millisecondsSinceEpoch)),
               ),
             if (isFinished && endAtList != null)
-              '완료 시각': Row(
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: NumberScrollRow(
-                      defaultValue: endAtList![3],
-                      onChanged: (value) => setState(() {
-                        endAtList![3] = value;
-                        setValueAuto();
-                      }),
-                      trailingText: '시',
-                      maxValue: 23,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 5,
-                    child: NumberScrollRow(
-                      defaultValue: endAtList![4],
-                      onChanged: (value) => setState(() {
-                        endAtList![4] = value;
-                        setValueAuto();
-                      }),
-                      trailingText: '분',
-                      maxValue: 59,
-                    ),
-                  )
-                ],
+              '완료 시각': ClockScrollRow(
+                defaultHour: endAtList![3],
+                onHourChanged: (value) => setState(() {
+                  endAtList![3] = value;
+                  setValueAuto();
+                }),
+                defaultMinute: endAtList![4],
+                onMinuteChanged: (value) => setState(() {
+                  endAtList![4] = value;
+                  setValueAuto();
+                }),
               )
           }),
           CardTable(data: {
             '달성도 (${quest.achievementType.label})': TextFormField(
-              key: isValueEnable ? null :  GlobalKey(debugLabel: value.toString()),
+              key: isValueEnable ? null : GlobalKey(debugLabel: value.toString()),
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               onChanged: (input) {
                 final number = int.tryParse(input) ?? 0;
