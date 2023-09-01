@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quelendar/item/task_edit_view.dart';
 import 'package:quelendar/item/task_item.dart';
 import 'package:quelendar/quest.dart';
 import 'package:quelendar/quest_provider.dart';
@@ -124,6 +125,9 @@ class MissionEditViewState extends State<MissionEditView> {
           ),
         ];
       } else {
+        final finishedTaskList = taskList.where((task) => task.endAt != null).toList();
+        final unfinishedTaskList = taskList.where((task) => task.endAt == null).toList();
+
         return [
           CardTable(
             data: {
@@ -149,10 +153,35 @@ class MissionEditViewState extends State<MissionEditView> {
                 ),
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: taskList.length,
+                  itemCount: finishedTaskList.length + 1,
                   itemBuilder: (context, index) {
+                    if (index == 0) {
+                      final isUnfinishedTaskExist = unfinishedTaskList.isNotEmpty;
+
+                      if (isUnfinishedTaskExist) {
+                        return ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => TaskEditView(taskId: unfinishedTaskList[0].id)),
+                              );
+                            },
+                            child: const Text("완료하기"));
+                      } else {
+                        return ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TaskEditView.generateTask(missionId: widget.missionId)),
+                              );
+                            },
+                            child: const Text("새로 만들기"));
+                      }
+                    }
+
                     return TaskItem(
-                      taskId: taskList[index].id,
+                      taskId: finishedTaskList[index - 1].id,
                     );
                   },
                 ),

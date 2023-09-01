@@ -10,29 +10,41 @@ import 'package:quelendar/util/random_id.dart';
 class TaskEditView extends StatefulWidget {
   final String taskId;
   final String? missionId;
-  const TaskEditView({required this.taskId, super.key}) : missionId = null;
-  TaskEditView.generateTask({required this.missionId, super.key}) : taskId = randomId();
+  final bool isGenerateMode;
+  const TaskEditView({required this.taskId, super.key})
+      : missionId = null,
+        isGenerateMode = false;
+  TaskEditView.generateTask({required this.missionId, super.key})
+      : taskId = randomId(),
+        isGenerateMode = true;
 
   @override
   TaskEditViewState createState() => TaskEditViewState();
 }
 
 class TaskEditViewState extends State<TaskEditView> {
-  String name = "";
+  late String taskId;
+  late String missionId;
+  late int startAt;
+  late int? endAt;
+  late int value;
+  late String name;
 
   bool isEditMode = false;
+  late bool isGenerateMode;
 
   void setEditState() {
     final task = context.read<QuestProvider>().taskMap[widget.taskId];
-    if (task != null) {
-      // 기존에 있는 태스크
-      name = task.name;
-      return;
-    } else {
-      // 태스크 생성
-      final missionId = widget.missionId;
-      if (missionId == null) return;
+    if (isGenerateMode) {
+      isEditMode = true;
+      taskId = widget.taskId;
+      missionId = widget.missionId ?? "";
+      startAt = 0;
+      endAt = null;
+      value = 0;
+      name = "";
 
+      // 태스크 생성
       final mission = context.read<QuestProvider>().missionMap[widget.missionId];
       if (mission == null) return;
 
@@ -40,17 +52,30 @@ class TaskEditViewState extends State<TaskEditView> {
       if (quest == null) return;
 
       name = "${quest.name}의 태스크";
+    } else {
+      // 기존에 있는 태스크
+      if (task == null) return;
+
+      taskId = widget.taskId;
+      missionId = task.missionId;
+      startAt = task.startAt;
+      endAt = task.endAt;
+      value = task.value;
+      name = task.name;
+
+      return;
     }
   }
 
   @override
   void initState() {
     super.initState();
+    isGenerateMode = widget.isGenerateMode;
     setEditState();
   }
 
   String? validateTask() {
-    if (name.length > 16) return "메모는 16글자를 넘을 수 없습니다";
+    if (name.length > 24) return "이름은 24글자를 넘을 수 없습니다";
     return null;
   }
 
@@ -58,7 +83,6 @@ class TaskEditViewState extends State<TaskEditView> {
   Widget build(BuildContext context) {
     final questProvider = context.watch<QuestProvider>();
     final Task? task = questProvider.taskMap[widget.taskId];
-    if (task == null) return Container();
 
     final List<Widget> listViewChildren = (() {
       if (isEditMode) {
@@ -109,11 +133,11 @@ class TaskEditViewState extends State<TaskEditView> {
 
                 try {
                   final newTask = Task(
-                    id: task.id,
-                    missionId: task.missionId,
-                    startAt: task.startAt,
-                    endAt: task.endAt,
-                    value: task.value,
+                    id: widget.taskId,
+                    missionId: missionId,
+                    startAt: startAt,
+                    endAt: endAt,
+                    value: value,
                     name: name,
                   );
 
@@ -130,6 +154,8 @@ class TaskEditViewState extends State<TaskEditView> {
           ),
         ];
       } else {
+        if (task == null) return <Widget>[];
+
         return [
           CardTable(
             data: {
