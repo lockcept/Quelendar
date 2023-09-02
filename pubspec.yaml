@@ -12,6 +12,7 @@ dependencies:
   numberpicker: 2.1.2
   collection: 1.17.2
   jiffy: 6.2.1
+  firebase_core: 2.15.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
