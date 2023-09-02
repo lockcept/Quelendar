@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1018928109248",
+    "project_id": "quelendar-lockcept",
+    "storage_bucket": "quelendar-lockcept.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018928109248:android:dab68caa09231a08dfff25",
+        "android_client_info": {
+          "package_name": "com.example.quelendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018928109248-tdnbav2n7bsqh4qe5qgrcui28r6f2k1c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXRTVgzs_H1XYVcFFhTiyyRLnxmoYgRsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018928109248-tdnbav2n7bsqh4qe5qgrcui28r6f2k1c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1018928109248-74mju09d9icmu4efh3hjfe3fncl05p0r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.questTracker.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
