@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quelendar/item/quest_edit_view.dart';
 import 'package:quelendar/quest.dart';
-import 'package:quelendar/quest_provider.dart';
+import 'package:quelendar/provider/quest_provider.dart';
 
 String? getRepeatMessage(RepeatCycle repeatCycle, List<int> repeatData) {
   try {

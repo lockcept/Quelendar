@@ -13,6 +13,8 @@ dependencies:
   collection: 1.17.2
   jiffy: 6.2.1
   firebase_core: 2.15.1
+  cloud_firestore: 4.9.1
+  firebase_auth: 4.9.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

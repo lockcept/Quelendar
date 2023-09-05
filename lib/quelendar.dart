@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quelendar/auth_view.dart';
 import 'package:quelendar/body/home_body.dart';
+import 'package:quelendar/provider/firebase_provider.dart';
 
 import 'body/quest_body.dart';
 import 'body/setting_body.dart';
@@ -12,7 +15,7 @@ class Quelendar extends StatefulWidget {
 }
 
 class QuelendarState extends State<Quelendar> {
-  int currentPageIndex = 1;
+  int currentPageIndex = 0;
 
   final bodyList = <Widget>[
     const HomeBody(),
@@ -22,6 +25,9 @@ class QuelendarState extends State<Quelendar> {
 
   @override
   Widget build(BuildContext context) {
+    final firebaseProvider = context.watch<FirebaseProvider>();
+    if (firebaseProvider.user == null) return const AuthView();
+
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         onTap: (int index) {

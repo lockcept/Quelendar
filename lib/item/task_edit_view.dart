@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:provider/provider.dart';
 import 'package:quelendar/quest.dart';
-import 'package:quelendar/quest_provider.dart';
+import 'package:quelendar/provider/quest_provider.dart';
 import 'package:quelendar/util/card_table.dart';
 import 'package:quelendar/util/clock_scroll_row.dart';
 import 'package:quelendar/util/get_format_string.dart';

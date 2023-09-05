@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:quelendar/item/mission_item.dart';
 import 'package:quelendar/item/quest_item.dart';
 import 'package:quelendar/quest.dart';
-import 'package:quelendar/quest_provider.dart';
+import 'package:quelendar/provider/quest_provider.dart';
 import 'package:quelendar/util/card_table.dart';
 import 'package:quelendar/util/days_selector.dart';
 import 'package:quelendar/util/get_format_string.dart';

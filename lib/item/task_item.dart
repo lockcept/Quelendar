@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quelendar/item/task_edit_view.dart';
-import 'package:quelendar/quest_provider.dart';
+import 'package:quelendar/provider/quest_provider.dart';
 
 class TaskItem extends StatelessWidget {
   final String taskId;

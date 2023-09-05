@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quelendar/preference_provider.dart';
+import 'package:quelendar/provider/firebase_provider.dart';
+import 'package:quelendar/provider/preference_provider.dart';
 import 'package:quelendar/util/card_table.dart';
 
 class SettingBody extends StatelessWidget {
@@ -9,6 +10,7 @@ class SettingBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final preferenceProvider = context.watch<PreferenceProvider>();
+    final firebaseProvider = context.watch<FirebaseProvider>();
     final isDarkMode = preferenceProvider.isDarkMode;
 
     return Scaffold(
@@ -35,6 +37,13 @@ class SettingBody extends StatelessWidget {
               ),
             },
           ),
+          CardTable(data: {
+            '계정': ElevatedButton(
+                onPressed: () {
+                  firebaseProvider.signOutWithGoogle();
+                },
+                child: const Text("로그아웃"))
+          }),
         ]),
       ),
     );

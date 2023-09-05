@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quelendar/preference_provider.dart';
+import 'package:quelendar/provider/preference_provider.dart';
 import 'package:quelendar/util/card_table.dart';
 
 class FilterView extends StatefulWidget {

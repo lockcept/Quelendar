@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:quelendar/item/filter_view.dart';
 import 'package:quelendar/item/quest_edit_view.dart';
 import 'package:quelendar/item/quest_item.dart';
-import 'package:quelendar/preference_provider.dart';
-import 'package:quelendar/quest_provider.dart';
+import 'package:quelendar/provider/preference_provider.dart';
+import 'package:quelendar/provider/quest_provider.dart';
 import 'package:quelendar/util/calculate_focus_color.dart';
 
 class QuestBody extends StatelessWidget {
