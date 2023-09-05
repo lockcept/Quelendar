@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:quelendar/quest.dart';
-import 'package:quelendar/quest_dummy.dart';
 import 'package:quelendar/util/random_id.dart';
 
 const oneDayInMs = 1 * 24 * 60 * 60 * 1000;
@@ -16,18 +15,7 @@ class QuestProvider with ChangeNotifier {
   Map<String, Tag> tagMap = {};
 
   QuestProvider() {
-    insertDummy();
     validateMission();
-  }
-
-  void insertDummy() {
-    addQuest(quest1);
-    addQuest(quest2);
-    addQuest(quest3);
-    addQuest(quest4);
-    addTag(tag1);
-    addTag(tag2);
-    notifyListeners();
   }
 
   void validateMission() {
