@@ -15,7 +15,10 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => FirebaseProvider()),
-      ChangeNotifierProvider(create: (_) => QuestProvider()),
+      ChangeNotifierProxyProvider<FirebaseProvider, QuestProvider>(
+        update: (_, firebase, __) => QuestProvider(firebase),
+        create: (_) => QuestProvider(null),
+      ),
       ChangeNotifierProvider(create: (_) => PreferenceProvider())
     ],
     child: const App(),

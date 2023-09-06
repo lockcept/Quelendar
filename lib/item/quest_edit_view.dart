@@ -322,7 +322,7 @@ class QuestEditViewState extends State<QuestEditView> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
-              onPressed: () {
+              onPressed: () async {
                 final validation = validateQuest();
 
                 if (validation != null) {
@@ -345,9 +345,10 @@ class QuestEditViewState extends State<QuestEditView> {
                   return;
                 }
 
-                final tagIdList = tagNameList.map((tagName) {
-                  return questProvider.getTagByName(tagName).id;
-                }).toList();
+                final tagIdList = await Future.wait(tagNameList.map((tagName) async {
+                  final tag = await questProvider.getTagByName(tagName);
+                  return tag.id;
+                }).toList());
 
                 try {
                   final quest = Quest(
@@ -362,7 +363,7 @@ class QuestEditViewState extends State<QuestEditView> {
                     goal: goal,
                   );
 
-                  questProvider.addQuest(quest);
+                  await questProvider.addQuest(quest);
                   setState(() {
                     isEditMode = false;
                   });

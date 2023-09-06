@@ -79,7 +79,7 @@ class MissionEditViewState extends State<MissionEditView> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
-              onPressed: () {
+              onPressed: () async {
                 final validation = validateMission();
 
                 if (validation != null) {
@@ -112,7 +112,7 @@ class MissionEditViewState extends State<MissionEditView> {
                     comment: comment,
                   );
 
-                  questProvider.addMission(newMission);
+                  await questProvider.addMission(newMission);
                   setState(() {
                     isEditMode = false;
                   });

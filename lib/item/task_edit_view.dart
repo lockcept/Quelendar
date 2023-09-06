@@ -283,7 +283,7 @@ class TaskEditViewState extends State<TaskEditView> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
-              onPressed: () {
+              onPressed: () async {
                 final validation = validateTask();
 
                 if (validation != null) {
@@ -316,7 +316,7 @@ class TaskEditViewState extends State<TaskEditView> {
                     name: name,
                   );
 
-                  questProvider.addTask(newTask);
+                  await questProvider.addTask(newTask);
                   setState(() {
                     isEditMode = false;
                   });
