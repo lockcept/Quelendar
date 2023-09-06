@@ -27,6 +27,7 @@ class HomeBody extends StatelessWidget {
     final filteredMissionList = missionList.where((mission) {
       final quest = questMap[mission.questId];
       if (quest == null) return false;
+      if (quest.isDeleted) return false;
 
       if (questNameFilter != null) {
         if (!quest.name.contains(questNameFilter)) return false;

@@ -20,6 +20,8 @@ class QuestBody extends StatelessWidget {
     final tagNameFilter = preferenceProvider.tagNameFilter;
 
     final filteredQuestList = questMap.values.where((quest) {
+      if (quest.isDeleted) return false;
+
       if (questNameFilter != null) {
         if (!quest.name.contains(questNameFilter)) return false;
       }

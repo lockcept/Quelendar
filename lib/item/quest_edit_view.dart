@@ -361,6 +361,7 @@ class QuestEditViewState extends State<QuestEditView> {
                     repeatData: repeatData,
                     achievementType: achievementType,
                     goal: goal,
+                    isDeleted: false,
                   );
 
                   await questProvider.addQuest(quest);
@@ -446,6 +447,66 @@ class QuestEditViewState extends State<QuestEditView> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
+          if (isEditMode && quest != null)
+            IconButton(
+              icon: const Icon(
+                Icons.close,
+              ),
+              color: Theme.of(context).colorScheme.primary,
+              onPressed: () => setState(() {
+                isEditMode = false;
+              }),
+            ),
+          if (!isEditMode && quest != null)
+            IconButton(
+              icon: const Icon(
+                Icons.delete,
+              ),
+              color: Theme.of(context).colorScheme.primary,
+              onPressed: () async {
+                final result = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('퀘스트를 삭제하시겠습니까?'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true); // 다이얼로그를 닫고 true 반환
+                        },
+                        child: const Text('확인'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false); // 다이얼로그를 닫고 false 반환
+                        },
+                        child: const Text('취소'),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (result == true) {
+                  final updatedQuest = Quest(
+                    id: quest.id,
+                    name: quest.name,
+                    tagIdList: List.from(quest.tagIdList),
+                    startAt: quest.startAt,
+                    endAt: quest.endAt,
+                    repeatCycle: quest.repeatCycle,
+                    repeatData: quest.repeatData,
+                    achievementType: quest.achievementType,
+                    goal: quest.goal,
+                    isDeleted: true,
+                  );
+
+                  await questProvider.addQuest(updatedQuest);
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pop();
+                } else {
+                  debugPrint('삭제를 취소했습니다.');
+                }
+              },
+            ),
           if (!isEditMode && quest != null)
             IconButton(
               icon: const Icon(
@@ -457,16 +518,6 @@ class QuestEditViewState extends State<QuestEditView> {
                 isEditMode = true;
               }),
             ),
-          if (isEditMode && quest != null)
-            IconButton(
-              icon: const Icon(
-                Icons.close,
-              ),
-              color: Theme.of(context).colorScheme.primary,
-              onPressed: () => setState(() {
-                isEditMode = false;
-              }),
-            )
         ],
       ),
       body: Padding(

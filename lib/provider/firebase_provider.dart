@@ -48,6 +48,7 @@ class FirebaseProvider with ChangeNotifier {
           repeatData: List<int>.from(questData['repeatData']),
           achievementType: AchievementType.getById(questData['achievementType']),
           goal: questData['goal'],
+          isDeleted: questData['isDeleted'] ?? false,
         );
 
         questMap[quest.id] = quest;
@@ -135,6 +136,7 @@ class FirebaseProvider with ChangeNotifier {
         'repeatData': quest.repeatData,
         'achievementType': quest.achievementType.id, // AchievementType의 라벨을 저장
         'goal': quest.goal,
+        'isDeleted': quest.isDeleted,
       };
 
       // Firestore에 데이터 추가

@@ -88,6 +88,7 @@ class Quest {
   List<int> repeatData;
   AchievementType achievementType;
   int goal;
+  bool isDeleted;
 
   Quest({
     required this.id,
@@ -99,5 +100,6 @@ class Quest {
     required this.repeatData,
     required this.achievementType,
     required this.goal,
+    required this.isDeleted,
   });
 }
