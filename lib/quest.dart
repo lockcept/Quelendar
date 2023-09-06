@@ -24,6 +24,10 @@ enum AchievementType {
   final String id;
   final String label;
 
+  factory AchievementType.getById(String id) {
+    return AchievementType.values.firstWhere((value) => value.id == id, orElse: () => AchievementType.count);
+  }
+
   factory AchievementType.getByLabel(String label) {
     return AchievementType.values.firstWhere((value) => value.label == label, orElse: () => AchievementType.count);
   }
@@ -64,6 +68,10 @@ enum RepeatCycle {
   const RepeatCycle(this.type, this.label);
   final String type;
   final String label;
+
+  factory RepeatCycle.getByType(String type) {
+    return RepeatCycle.values.firstWhere((value) => value.type == type, orElse: () => RepeatCycle.none);
+  }
 
   factory RepeatCycle.getByLabel(String label) {
     return RepeatCycle.values.firstWhere((value) => value.label == label, orElse: () => RepeatCycle.none);

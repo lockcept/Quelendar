@@ -23,8 +23,9 @@ class QuestProvider with ChangeNotifier {
 
   Future<void> initData() async {
     if (firebaseProvider == null) return;
-    await firebaseProvider!.initData(questMap);
+    await firebaseProvider!.initData(questMap, missionMap, taskMap, tagMap);
     await validateMission();
+    notifyListeners();
   }
 
   Future<void> validateMission() async {

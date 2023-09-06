@@ -25,22 +25,97 @@ class FirebaseProvider with ChangeNotifier {
     });
   }
 
-  Future<void> initData(Map<String, Quest> questMap) async {
+  Future<void> initData(Map<String, Quest> questMap, Map<String, Mission> missionMap, Map<String, Task> taskMap,
+      Map<String, Tag> tagMap) async {
     if (user == null) return;
+
+    final uid = user!.uid;
 
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('quest').where('userId', isEqualTo: user!.uid).get();
+          await FirebaseFirestore.instance.collection('quest').where('userId', isEqualTo: uid).get();
 
       for (var doc in querySnapshot.docs) {
-        final quest = doc.data();
+        final questData = doc.data() as Map<String, dynamic>;
 
-        debugPrint(quest.toString());
+        final quest = Quest(
+          id: questData['id'],
+          name: questData['name'],
+          tagIdList: List<String>.from(questData['tagIdList']),
+          startAt: questData['startAt'],
+          endAt: questData['endAt'],
+          repeatCycle: RepeatCycle.getByType(questData['repeatCycle']),
+          repeatData: List<int>.from(questData['repeatData']),
+          achievementType: AchievementType.getById(questData['achievementType']),
+          goal: questData['goal'],
+        );
 
-        // questMap[quest.id] = Quest(quest);
+        questMap[quest.id] = quest;
       }
     } catch (e) {
       debugPrint('Error getting quest: $e');
+    }
+
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('mission').where('userId', isEqualTo: uid).get();
+
+      for (var doc in querySnapshot.docs) {
+        final missionData = doc.data() as Map<String, dynamic>;
+
+        final mission = Mission(
+          id: missionData['id'],
+          questId: missionData['questId'],
+          startAt: missionData['startAt'],
+          endAt: missionData['endAt'],
+          goal: missionData['goal'],
+          comment: missionData['comment'],
+        );
+
+        missionMap[mission.id] = mission;
+      }
+    } catch (e) {
+      debugPrint('Error getting mission: $e');
+    }
+
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('task').where('userId', isEqualTo: uid).get();
+
+      for (var doc in querySnapshot.docs) {
+        final taskData = doc.data() as Map<String, dynamic>;
+
+        final task = Task(
+          id: taskData['id'],
+          missionId: taskData['missionId'],
+          name: taskData['name'],
+          startAt: taskData['startAt'],
+          endAt: taskData['endAt'],
+          value: taskData['value'],
+        );
+
+        taskMap[task.id] = task;
+      }
+    } catch (e) {
+      debugPrint('Error getting task: $e');
+    }
+
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('tag').where('userId', isEqualTo: uid).get();
+
+      for (var doc in querySnapshot.docs) {
+        final tagData = doc.data() as Map<String, dynamic>;
+
+        final tag = Tag(
+          id: tagData['id'],
+          name: tagData['name'],
+        );
+
+        tagMap[tag.id] = tag;
+      }
+    } catch (e) {
+      debugPrint('Error getting tag: $e');
     }
   }
 
