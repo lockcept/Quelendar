@@ -1,5 +1,8 @@
 # [Quelendar](https://quelendar.lockcept.kr)
 
+> ⚠️ **Notice:**  
+> The Firebase Auth and Database services for this project have been discontinued. Please be aware that authentication and data storage features are no longer operational.
+
 Quelendar is a task management application built with Flutter, designed to help users organize their quests, missions, and tasks efficiently. By distinguishing between these three concepts, it provides a structured way to manage personal and team-based projects.
 
 ## Concepts
